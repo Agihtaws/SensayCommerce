@@ -2,7 +2,11 @@
   "rewrites": [
     {
       "source": "/api/(.*)",
-      "destination": "/sensay-ecommerce-backend/api"
+      "destination": "/sensay-ecommerce-backend/api/index.js"
+    },
+    {
+      "source": "/(.*)",
+      "destination": "/sensay-ecommerce-frontend/build/index.html"
     }
   ],
   "builds": [
@@ -13,9 +17,11 @@
     {
       "src": "sensay-ecommerce-frontend/package.json",
       "use": "@vercel/static-build",
-      "config": { "distDir": "build" } 
+      "config": { 
+        "distDir": "build"
+      }
     }
   ],
   "installCommand": "npm install --prefix sensay-ecommerce-backend && npm install --prefix sensay-ecommerce-frontend",
-  "buildCommand": "npm run build --prefix sensay-ecommerce-frontend"
+  "buildCommand": "CI=false npm run build --prefix sensay-ecommerce-frontend"
 }
