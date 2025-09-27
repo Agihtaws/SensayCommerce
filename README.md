@@ -2,112 +2,132 @@
 
 ## 🚀 Live Demo & Project Links
 
-*   **Live Frontend Application:** [https://sensaycommerce.onrender.com/](https://sensaycommerce.onrender.com/)
-*   **Backend API Base URL:** [https://sensay-backend.onrender.com/api/health](https://sensay-backend.onrender.com/api/health)
-*   **GitHub Repository:** [https://github.com/Agihtaws/SensayCommerce](https://github.com/Agihtaws/SensayCommerce)
-*   **Demo Video:** [YOUR_DEMO_VIDEO_LINK] (e.g., YouTube, Loom)
+| Resource                  | Link                                                                                             |
+| ------------------------- | ------------------------------------------------------------------------------------------------ |
+| Live Frontend Application | [https://sensaycommerce.onrender.com/](https://sensaycommerce.onrender.com/)                     |
+| Backend API Base URL      | [https://sensay-backend.onrender.com/api/health](https://sensay-backend.onrender.com/api/health) |
+| GitHub Repository         | [https://github.com/Agihtaws/SensayCommerce](https://github.com/Agihtaws/SensayCommerce)         |
+| Demo Video                | [YOUR_DEMO_VIDEO_LINK]                                                                           |
 
 ---
 
 ## ✨ Introduction
 
-**SensayCommerce** is an innovative e-commerce platform designed to revolutionize online shopping through deep integration with **Sensay's powerful AI agent platform**. Built as a monorepo with distinct frontend and backend applications, it offers a seamless and intelligent shopping experience for customers and a robust management interface for administrators.
+**SensayCommerce** is an innovative e-commerce platform that combines **intelligent AI assistance** with a modern shopping experience. Built as a **monorepo** with separate frontend and backend applications, it provides:
 
-The core innovation lies in the **Sensay AI Assistant**, which leverages advanced conversational AI to guide customers, answer product questions, track intent, and provide personalized support, embodying the vision of "selling smarter and scaling faster" in e-commerce.
+* **Smart AI support for customers**
+* **Dynamic product knowledge management**
+* **Efficient operations for administrators**
+
+The core innovation is the **Sensay AI Assistant**, which enhances user experience by answering questions, providing recommendations, and guiding customers, embodying the principle:
+
+> “Sell smarter. Scale faster.”
 
 ---
 
 ## 💡 Project Idea & Core Value
 
-Our project addresses the need for more intelligent and responsive e-commerce experiences. Traditional online stores often lack the personalized, real-time assistance that a human sales associate provides. SensayCommerce bridges this gap by:
+SensayCommerce addresses the limitations of traditional e-commerce platforms by offering:
 
-*   **Empowering Customers:** Offering instant, contextualized support and product information through a smart AI chatbot.
-*   **Boosting Sales & Conversions:** Guiding customers effectively, suggesting relevant products, and assisting with the purchasing process, even when human staff are unavailable.
-*   **Streamlining Operations:** Automating routine customer inquiries and product information delivery, allowing human teams to focus on complex issues and strategic growth.
+* **Empowered Customers:** Instant, contextualized AI support and product guidance.
+* **Boosted Sales & Conversions:** Personalized recommendations and shopping assistance.
+* **Streamlined Operations:** Automation of routine queries, freeing human staff for strategic tasks.
 
-This platform serves as a testament to how AI can transform the digital retail landscape, making shopping more engaging and efficient for everyone.
+This platform demonstrates how AI can transform digital retail by making shopping more engaging and efficient.
 
 ---
 
-## 🤖 How the Chatbot Works & Its Use Case (Sensay Connect Hackathon Submission)
+## 🤖 Sensay E-commerce Assistant (Chatbot)
 
-### Chatbot Overview: Sensay E-commerce Assistant
+### Overview
 
-The "Sensay E-commerce Assistant" is a custom-built AI chatbot integrated into the Swathiga E-commerce Solutions platform. Its primary function is to enhance the customer experience by providing intelligent, real-time support, product information, and personalized guidance throughout the shopping journey. It acts as a 24/7 virtual sales and support agent, directly addressing the "E-Commerce – Sell smarter. Scale faster." track of the Sensay Connect Hackathon.
+The **Sensay E-commerce Assistant** is an AI chatbot designed to:
 
+* Guide customers through the shopping process.
+* Answer product and policy-related questions.
+* Provide a 24/7 virtual sales and support experience.
 
-### Core Functionality & AI Integration:
+It addresses the **Sensay Connect Hackathon** challenge: *“E-Commerce – Sell smarter. Scale faster.”*
 
-1.  **Customer Interaction & Contextual Understanding:**
-    *   Customers interact with the chatbot via a floating widget on the public frontend, using text or voice input (via Web Speech API).
-    *   For logged-in users, the backend dynamically gathers crucial real-time context: user profile (name, email), current items in their shopping cart, and details of recent orders.
-    *   This rich context is passed with the customer's query to the Sensay AI, enabling highly personalized and relevant responses (e.g., "You have a gaming mouse in your cart, would you like to see compatible gaming keyboards?").
-    *   **Local Context Handling:** The system intelligently intercepts common queries like "what's in my cart?" or "track my order [Order ID]" to provide immediate, precise responses directly from the e-commerce database, optimizing speed and efficiency before engaging the broader AI.
+---
 
-2.  **Dynamic Knowledge Base Integration:**
-    *   The platform's entire product catalog (including names, descriptions, prices, brands, categories, specifications, and images) is automatically and dynamically synchronized with the Sensay AI's knowledge base upon product creation or update.
-    *   Administrators can further enrich the knowledge base by uploading external files (PDF, TXT, CSV) directly through the admin panel, providing the chatbot with comprehensive data on company policies, detailed product manuals, or FAQs.
-    *   The Sensay AI leverages this up-to-date knowledge to accurately answer customer queries about products, policies, and more.
+### Core Functionality
 
-3.  **Sensay AI Processing & Intelligent Responses:**
-    *   The backend's dedicated `SensayService` acts as the bridge, forwarding customer queries (with their rich context) to the `E-commerce Assistant` replica on the Sensay platform.
-    *   Sensay's powerful AI agents process this information, understand intent, and generate natural language responses. These responses are designed to be informative, helpful, and often include actionable links back to relevant product pages or sections of the e-commerce site.
-    *   All AI interactions (chat completions, knowledge updates, replica creation) are meticulously tracked and deducted from the user's (or system's) Sensay balance, ensuring transparent resource management.
+1. **Customer Interaction & Contextual Understanding**
 
-### Use Case: Enhanced E-commerce Customer Experience
+   * Users interact through a floating chat widget (text & voice via Web Speech API).
+   * Backend retrieves user context (profile, cart, recent orders) to enhance AI responses.
+   * Common queries (e.g., “Track my order”) are handled locally for faster responses.
 
-The primary use case is to **transform and elevate the customer experience** for the Swathiga E-commerce Solutions platform, aligning perfectly with the "E-Commerce – Sell smarter. Scale faster." track.
+2. **Dynamic Knowledge Base Integration**
 
-*   **24/7 Intelligent Support:** Customers receive immediate, accurate answers to product inquiries, order status checks, and general questions, significantly reducing response times and improving satisfaction.
-*   **Personalized Sales Assistance:** The AI acts as a virtual sales assistant, offering tailored product recommendations, suggesting complementary items, and proactively guiding customers through their purchasing decisions, thereby increasing conversion rates and average order value.
-*   **Efficient Information Access:** Eliminates the need for customers to navigate extensive FAQs or product manuals, allowing them to get information quickly and effortlessly through natural conversation.
-*   **Operational Efficiency:** Automates a large volume of routine customer interactions, allowing human support teams to focus on more complex, high-value tasks.
-*   **Scalability:** Provides a scalable customer engagement solution that can handle fluctuating demand without proportional increases in staffing.
+   * Product catalog synced dynamically with the Sensay AI knowledge base.
+   * Admins can enrich the knowledge base with PDFs, CSVs, or TXT files (e.g., manuals, policies, FAQs).
 
-In conclusion, the Sensay E-commerce Assistant is a sophisticated, context-aware AI solution that brings intelligent, conversational commerce to life, directly addressing the hackathon's challenge by enabling smarter selling and faster growth.
+3. **Sensay AI Processing**
+
+   * `SensayService` forwards queries with context to the Sensay AI replica.
+   * AI provides natural, actionable responses including product links.
+   * All interactions tracked against Sensay balance.
+
+---
+
+### Use Case: Enhanced Customer Experience
+
+* **24/7 Intelligent Support:** Immediate answers, improved satisfaction.
+* **Personalized Sales Assistance:** Product recommendations and upsell suggestions.
+* **Efficient Information Access:** Quick, conversational access to product details.
+* **Operational Efficiency:** Reduces workload on human support teams.
+* **Scalability:** Handles large volumes of interactions without extra staffing.
 
 ---
 
 ## 🛠️ Technology Stack
 
-*   **Frontend:** React.js, React Router DOM, Axios, Lucide React (icons), React Hot Toast (notifications)
-*   **Backend:** Node.js, Express.js, Mongoose (MongoDB ODM), Dotenv, Cors, Helmet, Express Rate Limit, JSON Web Token (JWT), Cloudinary (image storage), Multer, Multer-Storage-Cloudinary
-*   **Database:** MongoDB Atlas (Cloud-hosted NoSQL)
-*   **AI Platform:** Sensay AI (for chatbot and knowledge base)
-*   **Deployment:** Render (Frontend & Backend Serverless Functions)
-*   **Version Control:** Git, GitHub
+| Layer           | Technologies                                                                                      |
+| --------------- | ------------------------------------------------------------------------------------------------- |
+| Frontend        | React.js, React Router DOM, Axios, Lucide React, React Hot Toast                                  |
+| Backend         | Node.js, Express.js, Mongoose, JWT, Dotenv, Cors, Helmet, Express Rate Limit, Multer & Cloudinary |
+| Database        | MongoDB Atlas                                                                                     |
+| AI Platform     | Sensay AI                                                                                         |
+| Deployment      | Render (Frontend & Backend)                                                                       |
+| Version Control | Git, GitHub                                                                                       |
 
 ---
 
-
 ## ⚙️ Local Development Setup
-
-Follow these instructions to set up and run the **SensayCommerce** application on your local machine.
 
 ### Prerequisites
 
-*   Node.js (v18 or higher recommended)
-*   npm or yarn
-*   MongoDB Atlas Account (for a cloud-hosted database URI)
-*   Sensay API Keys (Organization Secret, Organization ID, System User ID, Replica Name)
-*   Cloudinary Account (Cloud Name, API Key, API Secret)
+* Node.js (v18+)
+* npm or yarn
+* MongoDB Atlas account
+* Sensay API credentials
+* Cloudinary account
 
-### 1. Clone the Repository
+---
+
+### 1️⃣ Clone the Repository
 
 ```bash
 git clone https://github.com/Agihtaws/SensayCommerce.git
 cd SensayCommerce
+```
 
-2. Backend Setup (sensay-ecommerce-backend)
-Navigate to the backend directory:
+---
+
+### 2️⃣ Backend Setup (`sensay-ecommerce-backend`)
+
+```bash
 cd sensay-ecommerce-backend
+```
 
-A. Environment Variables (.env)
-Create a .env file in the sensay-ecommerce-backend/ directory with the following content. Replace placeholder values with your actual credentials.
-# Backend .env for Local Development
+#### A. Environment Variables (.env)
+
+```env
 PORT=5000
-MONGODB_URI=
-JWT_SECRET= your-super-secure-jwt-secret-key-here
+MONGODB_URI=YOUR_MONGO_URI
+JWT_SECRET=YOUR_SECRET_KEY
 SENSAY_ORGANIZATION_SECRET=
 SENSAY_ORGANIZATION_ID=
 SENSAY_BASE_URL=https://api.sensay.io
@@ -118,106 +138,101 @@ NODE_ENV=development
 CLOUDINARY_CLOUD_NAME=
 CLOUDINARY_API_KEY=
 CLOUDINARY_API_SECRET=
-CORS_ORIGIN_FRONTEND=http://localhost:3000 # For local frontend
+CORS_ORIGIN_FRONTEND=http://localhost:3000
+```
 
+#### B. Install Dependencies
 
-MONGODB_URI: Get this from your MongoDB Atlas dashboard.
-JWT_SECRET: Use a strong, random string.
-Sensay & Cloudinary Keys: Your actual API credentials.
+```bash
+npm install
+```
 
-B. Install Dependencies
-npm install # or yarn install
+#### C. Seed Admin User (First-Time Only)
 
-C. Seed Admin User (Optional, First Time Only)
-To create an initial admin user and set up their Sensay balance for testing the admin panel:
+```bash
 npm run seed-admin
+```
 
+* Admin Email: `admin@sensay-ecommerce.com`
+* Password: `Admin123!`
+* Initial Sensay Balance: 5000 units
 
-Admin Credentials for Local Login:
+#### D. Run Backend
 
-Email: admin@sensay-ecommerce.com
-Password: Admin123!
-Initial Sensay Balance: 5000 units
-
-
-
-D. Run the Backend
+```bash
 npm run dev
+```
 
-You should see output indicating successful MongoDB connection and the server running on http://localhost:5000. Keep this terminal running.
-3. Frontend Setup (sensay-ecommerce-frontend)
-Open a new terminal window and navigate to the frontend directory (from the project root):
-cd sensay-ecommerce-frontend
+---
 
-A. Environment Variables (.env)
-Create a .env file in the sensay-ecommerce-frontend/ directory:
-# Frontend .env for Local Development
+### 3️⃣ Frontend Setup (`sensay-ecommerce-frontend`)
+
+```bash
+cd ../sensay-ecommerce-frontend
+```
+
+#### A. Environment Variables (.env)
+
+```env
 REACT_APP_API_URL=http://localhost:5000/api
 REACT_APP_APP_NAME=Sensay E-commerce
+```
 
+#### B. Install Dependencies
 
-This tells your frontend to connect to your locally running backend.
+```bash
+npm install
+```
 
-B. Install Dependencies
-npm install # or yarn install
+#### C. Run Frontend
 
-C. Run the Frontend
+```bash
 npm start
+```
 
-This will open your React app in your browser, usually at http://localhost:3000.
+Open your browser at [http://localhost:3000](http://localhost:3000).
 
-☁️ Deployment
-This project is deployed using Render for both the frontend and backend applications, leveraging their continuous deployment from GitHub.
+---
 
-Frontend Deployment: The React application is deployed as a Static Site on Render.
-Backend Deployment: The Node.js/Express.js application is deployed as a Web Service on Render.
+## ☁️ Deployment (Render)
 
-The vercel.json file in the repository root is intended for Vercel deployment, showcasing a production-ready configuration for that platform, including serverless functions for the backend.
-Render Environment Variables
-When deploying to Render, the following environment variables were configured:
-For sensay-ecommerce-backend (Render Web Service):
+* Frontend: Static Site
+* Backend: Web Service
+* Continuous deployment from GitHub
 
-MONGODB_URI: 
-JWT_SECRET: your-super-secure-jwt-secret-key-here
-SENSAY_ORGANIZATION_SECRET: 
-SENSAY_ORGANIZATION_ID: 
-SENSAY_BASE_URL: https://api.sensay.io
-SENSAY_API_VERSION: 2025-03-25
-SENSAY_SYSTEM_USER_ID: 
-SENSAY_REPLICA_NAME: 
-CLOUDINARY_CLOUD_NAME: 
-CLOUDINARY_API_KEY: 
-CLOUDINARY_API_SECRET: 
-NODE_ENV: production
-CORS_ORIGIN_FRONTEND: https://sensaycommerce.onrender.com
+**Environment Variables** must be set on Render according to local `.env` settings, with `NODE_ENV=production`.
 
-For sensay-ecommerce-frontend (Render Static Site):
+---
 
-REACT_APP_API_URL: https://sensay-backend.onrender.com/api
-REACT_APP_APP_NAME: Sensay E-commerce
+## 🖼️ Screenshots & Media
 
+* [YOUR_LOGO_IMAGE_URL]
+  Include app screenshots or key visuals for clarity.
 
-🖼️ Screenshots & Media
-[YOUR_LOGO_IMAGE_URL]
-(e.g., a nice logo or a key screenshot of your application)
+---
 
-📈 Future Enhancements
+## 📈 Future Enhancements
 
-Advanced AI Features: Implement more complex Sensay AI integrations like proactive suggestions, multi-turn conversations for complex product comparisons, or personalized upsell flows based on browsing history.
-Payment Gateway Integration: Integrate real payment processing (e.g., Stripe, PayPal) instead of simulated payment.
-User Reviews & Ratings: Allow customers to leave reviews and ratings for products.
-Admin Analytics Dashboards: Develop more interactive and detailed analytics reports for administrators.
-Notifications: Implement real-time notifications for order status updates, new messages, etc.
-Dark Mode: Add a dark mode toggle for improved user experience.
+* Advanced AI: Multi-turn conversations, proactive suggestions, personalized upsells.
+* Payment Gateway Integration: Stripe, PayPal, etc.
+* User Reviews & Ratings
+* Admin Analytics Dashboard
+* Real-time Notifications
+* Dark Mode
 
+---
 
-🧑‍💻 Author
-Swathiga Ganesh - Creator, Developer
+## 🧑‍💻 Author
 
-GitHub: https://github.com/Agihtaws
-Email: swathiga581@gmail.com
+**Swathiga Ganesh** – Creator & Developer
 
+* GitHub: [https://github.com/Agihtaws](https://github.com/Agihtaws)
+* Email: [swathiga581@gmail.com](mailto:swathiga581@gmail.com)
 
-📜 License
-This project is licensed under the MIT License - see the LICENSE file for details.
+---
+
+## 📜 License
+
+This project is licensed under the **MIT License**. See [LICENSE](LICENSE) for details.
+
 
