@@ -32,7 +32,7 @@ app.use(cors({
   // In production on Vercel, your frontend will have a specific domain.
   // Replace 'https://your-vercel-frontend-domain.vercel.app' with that URL in Vercel's environment variables.
   origin: process.env.NODE_ENV === 'production'
-    ? [process.env.CORS_ORIGIN_FRONTEND || 'https://your-vercel-frontend-domain.vercel.app']
+    ? [process.env.CORS_ORIGIN_FRONTEND || 'https://sensaycommerce.onrender.com']
     : ['http://localhost:3000', 'http://localhost:3001'],
   credentials: true
 }));
