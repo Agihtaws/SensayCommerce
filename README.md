@@ -35,10 +35,6 @@ This platform serves as a testament to how AI can transform the digital retail l
 
 The "Sensay E-commerce Assistant" is a custom-built AI chatbot integrated into the Swathiga E-commerce Solutions platform. Its primary function is to enhance the customer experience by providing intelligent, real-time support, product information, and personalized guidance throughout the shopping journey. It acts as a 24/7 virtual sales and support agent, directly addressing the "E-Commerce – Sell smarter. Scale faster." track of the Sensay Connect Hackathon.
 
-**Sensay Configuration Details:**
-*   **SENSAY\_ORGANIZATION\_ID:** `3b0133b2-b253-443b-b347-3fab55ef8633`
-*   **SENSAY\_SYSTEM\_USER\_ID:** `swathiga_ecommerce_system`
-*   **SENSAY\_REPLICA_NAME:** `E-commerce Assistant`
 
 ### Core Functionality & AI Integration:
 
@@ -83,36 +79,6 @@ In conclusion, the Sensay E-commerce Assistant is a sophisticated, context-aware
 
 ---
 
-## 📂 Project Structure
-
-This project is organized as a monorepo, containing both the frontend and backend applications within a single GitHub repository.
-
-
-SensayCommerce/
-├── sensay-ecommerce-backend/        # Node.js/Express.js Backend Application
-│   ├── api/                         # Vercel Serverless Function entry point
-│   │   └── index.js
-│   ├── config/                      # Database & Cloudinary configurations
-│   ├── middleware/                  # Authentication middleware
-│   ├── models/                      # MongoDB Schemas (User, Product, Order, ChatMessage, SensayBalance, etc.)
-│   ├── routes/                      # API endpoints (Auth, Products, Orders, Sensay, etc.)
-│   ├── scripts/                     # Seed admin script
-│   ├── services/                    # Sensay API integration, etc.
-│   ├── .env                         # Environment variables (IGNORED by Git)
-│   └── package.json
-├── sensay-ecommerce-frontend/       # React.js Frontend Application
-│   ├── public/                      # Static assets
-│   ├── src/                         # React components, pages, services, context, styles
-│   │   ├── components/
-│   │   ├── context/
-│   │   ├── pages/
-│   │   ├── services/
-│   │   └── styles/                  # Custom CSS files (no Tailwind)
-│   ├── .env                         # Environment variables (IGNORED by Git)
-│   └── package.json
-└── vercel.json                      # Vercel deployment configuration for monorepo
-
----
 
 ## ⚙️ Local Development Setup
 
@@ -140,18 +106,18 @@ A. Environment Variables (.env)
 Create a .env file in the sensay-ecommerce-backend/ directory with the following content. Replace placeholder values with your actual credentials.
 # Backend .env for Local Development
 PORT=5000
-MONGODB_URI=mongodb+srv://swathiga:YOUR_ACTUAL_MONGODB_PASSWORD@sensay.haseler.mongodb.net/?retryWrites=true&w=majority&appName=sensay
-JWT_SECRET=your-super-secure-jwt-secret-key-here
-SENSAY_ORGANIZATION_SECRET=b213efa6e38a4e5ffdee74f949c3c858b27d61c7594a3c30caffef4362046a68
-SENSAY_ORGANIZATION_ID=3b0133b2-b253-443b-b347-3fab55ef8633
+MONGODB_URI=
+JWT_SECRET= your-super-secure-jwt-secret-key-here
+SENSAY_ORGANIZATION_SECRET=
+SENSAY_ORGANIZATION_ID=
 SENSAY_BASE_URL=https://api.sensay.io
 SENSAY_API_VERSION=2025-03-25
-SENSAY_SYSTEM_USER_ID=swathiga_ecommerce_system
-SENSAY_REPLICA_NAME=E-commerce Assistant
+SENSAY_SYSTEM_USER_ID=
+SENSAY_REPLICA_NAME=
 NODE_ENV=development
-CLOUDINARY_CLOUD_NAME=dej4lp4ox
-CLOUDINARY_API_KEY=469675794134833
-CLOUDINARY_API_SECRET=oD5O4l6H79oytA5zOQHMGD198IQ
+CLOUDINARY_CLOUD_NAME=
+CLOUDINARY_API_KEY=
+CLOUDINARY_API_SECRET=
 CORS_ORIGIN_FRONTEND=http://localhost:3000 # For local frontend
 
 
@@ -211,17 +177,17 @@ Render Environment Variables
 When deploying to Render, the following environment variables were configured:
 For sensay-ecommerce-backend (Render Web Service):
 
-MONGODB_URI: mongodb+srv://swathiga:YOUR_ACTUAL_PASSWORD_HERE@sensay.haseler.mongodb.net/?retryWrites=true&w=majority&appName=sensay
+MONGODB_URI: 
 JWT_SECRET: your-super-secure-jwt-secret-key-here
-SENSAY_ORGANIZATION_SECRET: b213efa6e38a4e5ffdee74f949c3c858b27d61c7594a3c30caffef4362046a68
-SENSAY_ORGANIZATION_ID: 3b0133b2-b253-443b-b347-3fab55ef8633
+SENSAY_ORGANIZATION_SECRET: 
+SENSAY_ORGANIZATION_ID: 
 SENSAY_BASE_URL: https://api.sensay.io
 SENSAY_API_VERSION: 2025-03-25
-SENSAY_SYSTEM_USER_ID: swathiga_ecommerce_system
-SENSAY_REPLICA_NAME: E-commerce Assistant
-CLOUDINARY_CLOUD_NAME: dej4lp4ox
-CLOUDINARY_API_KEY: 469675794134833
-CLOUDINARY_API_SECRET: oD5O4l6H79oytA5zOQHMGD198IQ
+SENSAY_SYSTEM_USER_ID: 
+SENSAY_REPLICA_NAME: 
+CLOUDINARY_CLOUD_NAME: 
+CLOUDINARY_API_KEY: 
+CLOUDINARY_API_SECRET: 
 NODE_ENV: production
 CORS_ORIGIN_FRONTEND: https://sensaycommerce.onrender.com
 
