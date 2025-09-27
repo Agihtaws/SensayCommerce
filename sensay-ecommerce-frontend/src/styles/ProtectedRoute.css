@@ -1,0 +1,159 @@
+/* ProtectedRoute.css */
+.protected-route-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  background: #f9fafb;
+}
+
+.protected-route-loading .loading-spinner {
+  border: 3px solid #e5e7eb;
+  border-top: 3px solid #3b82f6;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+/* Error states for protected routes */
+.protected-route-error {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 2rem;
+  text-align: center;
+  background: #f9fafb;
+}
+
+.protected-route-error-icon {
+  width: 4rem;
+  height: 4rem;
+  color: #dc2626;
+  margin-bottom: 1rem;
+}
+
+.protected-route-error-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #1f2937;
+  margin-bottom: 0.5rem;
+}
+
+.protected-route-error-message {
+  color: #6b7280;
+  margin-bottom: 2rem;
+  max-width: 400px;
+}
+
+.protected-route-error-actions {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+/* Unauthorized page styles */
+.unauthorized-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 2rem;
+  text-align: center;
+  background: #f9fafb;
+}
+
+.unauthorized-icon {
+  width: 5rem;
+  height: 5rem;
+  color: #f59e0b;
+  margin-bottom: 1.5rem;
+}
+
+.unauthorized-title {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #1f2937;
+  margin-bottom: 1rem;
+}
+
+.unauthorized-message {
+  color: #6b7280;
+  font-size: 1.125rem;
+  margin-bottom: 2rem;
+  max-width: 500px;
+  line-height: 1.6;
+}
+
+.unauthorized-actions {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+/* Loading overlay for forms */
+.form-loading-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(255, 255, 255, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+  border-radius: inherit;
+}
+
+/* Route transition loading */
+.route-transition-loading {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: #3b82f6;
+  z-index: 9999;
+  animation: route-loading 2s ease-in-out infinite;
+}
+
+@keyframes route-loading {
+  0% {
+    transform: translateX(-100%);
+  }
+  50% {
+    transform: translateX(0%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+/* Mobile responsive */
+@media (max-width: 768px) {
+  .protected-route-error,
+  .unauthorized-container {
+    padding: 1rem;
+  }
+  
+  .unauthorized-title {
+    font-size: 1.5rem;
+  }
+  
+  .unauthorized-message {
+    font-size: 1rem;
+  }
+  
+  .protected-route-error-actions,
+  .unauthorized-actions {
+    flex-direction: column;
+    width: 100%;
+    max-width: 300px;
+  }
+}

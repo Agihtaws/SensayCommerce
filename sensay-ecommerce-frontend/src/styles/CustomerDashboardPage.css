@@ -1,0 +1,340 @@
+/* CustomerDashboardPage.css */
+.customer-dashboard-page {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+}
+
+.customer-dashboard-title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #1f2937;
+  margin-bottom: 2rem;
+}
+
+/* Error State */
+.customer-dashboard-error-container {
+  text-align: center;
+  padding: 3rem 1rem;
+}
+
+.customer-dashboard-error-icon {
+  width: 3rem;
+  height: 3rem;
+  color: #ef4444; /* red-400 */
+  margin: 0 auto 0.5rem auto;
+}
+
+.customer-dashboard-error-title {
+  font-size: 1.125rem;
+  font-weight: 500;
+  color: #1f2937;
+  margin: 0.5rem 0 0.25rem 0;
+}
+
+.customer-dashboard-error-message {
+  font-size: 0.875rem;
+  color: #6b7280;
+  margin: 0 0 1rem 0;
+}
+
+/* Welcome Card */
+.customer-dashboard-welcome-card {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+  border: 1px solid #e5e7eb;
+}
+
+.customer-dashboard-welcome-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #1f2937;
+  margin: 0;
+}
+
+.customer-dashboard-welcome-text {
+  margin-top: 0.5rem;
+  color: #6b7280;
+  font-size: 0.9rem;
+}
+
+/* Stats Grid */
+.customer-dashboard-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.customer-dashboard-stat-card {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  padding: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border: 1px solid #e5e7eb;
+}
+
+.customer-dashboard-stat-info {
+  flex: 1;
+}
+
+.customer-dashboard-stat-label {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #6b7280;
+  margin: 0;
+}
+
+.customer-dashboard-stat-value {
+  margin-top: 0.25rem;
+  font-size: 2rem;
+  font-weight: 700;
+  color: #1f2937;
+}
+
+.customer-dashboard-stat-subtext {
+  font-size: 0.875rem;
+  color: #6b7280;
+  margin-top: 0.25rem;
+}
+
+.customer-dashboard-stat-icon {
+  width: 3rem;
+  height: 3rem;
+  flex-shrink: 0;
+  margin-left: 1rem;
+}
+
+.customer-dashboard-icon-blue {
+  color: #60a5fa; /* blue-400 */
+}
+
+.customer-dashboard-icon-red {
+  color: #f87171; /* red-400 */
+}
+
+.customer-dashboard-icon-green {
+  color: #4ade80; /* green-400 */
+}
+
+/* Recent Orders */
+.customer-dashboard-recent-orders-card {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+  border: 1px solid #e5e7eb;
+}
+
+.customer-dashboard-section-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #1f2937;
+  margin-bottom: 1rem;
+}
+
+.customer-dashboard-empty-text {
+  color: #6b7280;
+  font-size: 0.9rem;
+}
+
+.customer-dashboard-orders-table-responsive {
+  overflow-x: auto;
+}
+
+.customer-dashboard-orders-table {
+  min-width: 100%;
+  border-collapse: collapse;
+}
+
+.customer-dashboard-table-header {
+  padding: 0.75rem 1.5rem;
+  text-align: left;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #6b7280;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  background-color: #f9fafb;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.customer-dashboard-table-cell {
+  padding: 1rem 1.5rem;
+  font-size: 0.875rem;
+  color: #1f2937;
+  vertical-align: middle;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.customer-dashboard-table-cell:first-child {
+  font-weight: 500;
+}
+
+.customer-dashboard-order-number {
+  font-weight: 600;
+}
+
+.customer-dashboard-order-link {
+  color: #3b82f6;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.customer-dashboard-order-link:hover {
+  color: #2563eb;
+  text-decoration: underline;
+}
+
+.customer-dashboard-view-details {
+  text-align: right;
+}
+
+.customer-dashboard-view-link {
+  color: #3b82f6;
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.2s ease;
+}
+
+.customer-dashboard-view-link:hover {
+  color: #2563eb;
+  text-decoration: underline;
+}
+
+/* Quick Actions */
+.customer-dashboard-quick-actions-card {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  padding: 1.5rem;
+  border: 1px solid #e5e7eb;
+}
+
+.customer-dashboard-quick-actions-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1rem;
+}
+
+.customer-dashboard-action-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+.btn-icon {
+  margin-right: 0.5rem;
+}
+
+/* Badge Styles (reused from global) */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.025em;
+}
+
+.badge-success {
+  background: #d1fae5;
+  color: #065f46;
+}
+
+.badge-warning {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.badge-secondary {
+  background: #f3f4f6;
+  color: #374151;
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+  .customer-dashboard-page {
+    padding: 1rem;
+  }
+  
+  .customer-dashboard-title {
+    font-size: 2rem;
+    margin-bottom: 1.5rem;
+  }
+  
+  .customer-dashboard-welcome-card {
+    padding: 1rem;
+  }
+  
+  .customer-dashboard-welcome-title {
+    font-size: 1.25rem;
+  }
+  
+  .customer-dashboard-stats-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  
+  .customer-dashboard-stat-card {
+    padding: 1rem;
+  }
+  
+  .customer-dashboard-stat-value {
+    font-size: 1.5rem;
+  }
+  
+  .customer-dashboard-stat-icon {
+    width: 2rem;
+    height: 2rem;
+  }
+  
+  .customer-dashboard-recent-orders-card,
+  .customer-dashboard-quick-actions-card {
+    padding: 1rem;
+  }
+  
+  .customer-dashboard-orders-table-responsive {
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+  }
+  
+  .customer-dashboard-orders-table {
+    min-width: 500px; /* Ensure table content is not too squished */
+  }
+  
+  .customer-dashboard-table-header,
+  .customer-dashboard-table-cell {
+    padding: 0.75rem 1rem;
+  }
+  
+  .customer-dashboard-quick-actions-grid {
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .customer-dashboard-title {
+    font-size: 1.5rem;
+  }
+  
+  .customer-dashboard-welcome-text {
+    font-size: 0.8rem;
+  }
+}

@@ -1,0 +1,411 @@
+/* OrderHistoryPage.css */
+.order-history-page-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+}
+
+.order-history-page-title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #1f2937;
+  margin-bottom: 2rem;
+}
+
+/* Empty State */
+.order-history-empty-state-container {
+  text-align: center;
+  padding: 3rem 1rem;
+}
+
+.order-history-empty-icon {
+  width: 6rem;
+  height: 6rem;
+  color: #9ca3af;
+  margin: 0 auto 1.5rem auto;
+}
+
+.order-history-empty-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #1f2937;
+  margin: 0 0 0.5rem 0;
+}
+
+.order-history-empty-message {
+  font-size: 1rem;
+  color: #6b7280;
+  margin: 0 0 1.5rem 0;
+}
+
+/* Filters and Refresh */
+.order-history-filters-refresh-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  background: white;
+  padding: 1rem;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  border: 1px solid #e5e7eb;
+}
+
+.order-history-filter-group {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.order-history-filter-label {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #374151;
+}
+
+.form-select.order-history-filter-select {
+  width: auto;
+  min-width: 150px;
+  padding: 0.5rem 2.5rem 0.5rem 0.75rem;
+  border-radius: 8px;
+  border: 1px solid #d1d5db;
+  font-size: 0.875rem;
+  background-position: right 0.5rem center; /* Adjust arrow position */
+  appearance: none; /* Remove default arrow */
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='none'%3e%3cpath d='M7 7l3-3 3 3m0 6l-3 3-3-3' stroke='%239CA3AF' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-size: 1.5em 1.5em;
+}
+
+.refresh-btn-icon {
+  margin-right: 0.5rem;
+}
+
+/* Orders Table */
+.order-history-table-card {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  border: 1px solid #e5e7eb;
+}
+
+.order-history-table-wrapper {
+  overflow-x: auto;
+}
+
+.order-history-table-header-wrapper {
+  background-color: #f9fafb;
+  padding: 0.75rem 1.5rem;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.order-history-table-header-grid {
+  display: grid;
+  grid-template-columns: 3fr 3fr 2fr 2fr 2fr; /* Adjusted columns */
+  gap: 1rem;
+  min-width: 700px; /* Ensure content doesn't collapse */
+  align-items: center;
+  text-align: left;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #6b7280;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.order-history-header-cell {
+  /* No specific styling needed beyond grid placement */
+}
+
+.order-history-table-body {
+  min-height: 150px; /* Adjust as needed */
+}
+
+.order-history-no-results {
+  padding: 3rem 1.5rem;
+  text-align: center;
+}
+
+.order-history-no-results-icon {
+  width: 3rem;
+  height: 3rem;
+  color: #9ca3af;
+  margin: 0 auto 0.5rem auto;
+}
+
+.order-history-no-results-title {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #1f2937;
+  margin: 0.5rem 0 0.25rem 0;
+}
+
+.order-history-no-results-text {
+  font-size: 0.875rem;
+  color: #6b7280;
+  margin: 0;
+}
+
+.order-history-table-row {
+  padding: 1rem 1.5rem;
+  border-bottom: 1px solid #f3f4f6;
+  transition: background-color 0.2s ease;
+}
+
+.order-history-table-row:hover {
+  background-color: #f9fafb;
+}
+
+.order-history-table-row:last-child {
+  border-bottom: none;
+}
+
+.order-history-table-cell-grid {
+  display: grid;
+  grid-template-columns: 3fr 3fr 2fr 2fr 2fr; /* Adjusted columns */
+  gap: 1rem;
+  min-width: 700px; /* Ensure content doesn't collapse */
+  align-items: center;
+}
+
+.order-history-cell {
+  font-size: 0.875rem;
+  color: #1f2937;
+  vertical-align: middle;
+}
+
+.order-history-order-number-link {
+  font-weight: 500;
+  color: #3b82f6;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.order-history-order-number-link:hover {
+  color: #2563eb;
+  text-decoration: underline;
+}
+
+.order-history-date-text {
+  font-size: 0.875rem;
+  color: #6b7280;
+}
+
+.order-history-total-amount {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #1f2937;
+}
+
+/* Badge Styles (reused from global) */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.025em;
+}
+
+.badge-success {
+  background: #d1fae5;
+  color: #065f46;
+}
+
+.badge-warning {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.badge-danger {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.order-history-view-details-link {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #3b82f6;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.order-history-view-details-link:hover {
+  color: #2563eb;
+  text-decoration: underline;
+}
+
+/* Pagination */
+.pagination-container {
+  margin-top: 2rem;
+  background: white;
+  padding: 1rem;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  border: 1px solid #e5e7eb;
+}
+
+.pagination-mobile {
+  display: none;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.pagination-desktop {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.pagination-info {
+  font-size: 0.875rem;
+  color: #6b7280;
+  margin: 0;
+}
+
+.pagination-nav {
+  display: flex;
+  gap: 0.25rem;
+  align-items: center;
+}
+
+.pagination-nav-btn {
+  padding: 0.5rem 0.75rem;
+  border: 1px solid #d1d5db;
+  background: white;
+  color: #374151;
+  font-size: 0.875rem;
+  font-weight: 500;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.pagination-nav-btn:hover:not(:disabled) {
+  background: #f3f4f6;
+  border-color: #9ca3af;
+}
+
+.pagination-nav-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.pagination-nav-btn.active {
+  background: #3b82f6;
+  color: white;
+  border-color: #3b82f6;
+}
+
+.pagination-nav-btn.prev,
+.pagination-nav-btn.next {
+  padding: 0.5rem 1rem;
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+  .order-history-page-container {
+    padding: 1rem;
+  }
+  
+  .order-history-page-title {
+    font-size: 2rem;
+    margin-bottom: 1.5rem;
+  }
+  
+  .order-history-filters-refresh-bar {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 1rem;
+  }
+  
+  .order-history-filter-group {
+    width: 100%;
+    justify-content: space-between;
+  }
+  
+  .form-select.order-history-filter-select {
+    width: 100%;
+    min-width: auto;
+  }
+  
+  .order-history-table-header-wrapper {
+    display: none; /* Hide header on small screens */
+  }
+  
+  .order-history-table-row {
+    padding: 1rem;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    margin-bottom: 1rem;
+  }
+  
+  .order-history-table-row:last-child {
+    border-bottom: none; /* Remove bottom border for the last row in mobile view */
+  }
+  
+  .order-history-table-cell-grid {
+    grid-template-columns: 1fr; /* Stack columns on mobile */
+    gap: 0.5rem;
+    min-width: auto; /* Allow grid to shrink */
+  }
+  
+  .order-history-cell {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0; /* Remove cell padding as row handles it */
+  }
+  
+  .order-history-cell::before {
+    font-weight: 600;
+    color: #374151;
+    display: block;
+    margin-right: 0.5rem; /* Space between label and value */
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  
+  /* Specific labels for mobile cells */
+  .order-history-table-cell-grid > div:nth-child(1)::before { content: "Order #"; }
+  .order-history-table-cell-grid > div:nth-child(2)::before { content: "Date"; }
+  .order-history-table-cell-grid > div:nth-child(3)::before { content: "Total"; }
+  .order-history-table-cell-grid > div:nth-child(4)::before { content: "Status"; }
+  .order-history-table-cell-grid > div:nth-child(5)::before { content: "Actions"; }
+  
+  .pagination-desktop {
+    display: none;
+  }
+  
+  .pagination-mobile {
+    display: flex;
+  }
+}
+
+@media (max-width: 480px) {
+  .order-history-page-title {
+    font-size: 1.5rem;
+  }
+  
+  .order-history-empty-icon {
+    width: 4rem;
+    height: 4rem;
+  }
+  
+  .order-history-empty-title {
+    font-size: 1.125rem;
+  }
+  
+  .order-history-empty-message {
+    font-size: 0.875rem;
+  }
+  
+  .order-history-empty-state-btn {
+    padding: 0.5rem 1rem;
+    font-size: 0.875rem;
+  }
+}

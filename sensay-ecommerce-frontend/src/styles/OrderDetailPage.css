@@ -1,0 +1,428 @@
+/* OrderDetailPage.css */
+.customer-order-detail-page {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+}
+
+.customer-order-detail-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.customer-order-detail-title {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #1f2937;
+  margin: 0;
+}
+
+.btn-icon {
+  margin-right: 0.5rem;
+}
+
+/* Not Found State */
+.order-detail-not-found-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 4rem 1rem;
+  text-align: center;
+}
+
+.order-not-found-icon {
+  width: 6rem;
+  height: 6rem;
+  color: #dc2626;
+  margin-bottom: 1.5rem;
+}
+
+.order-not-found-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #1f2937;
+  margin: 0 0 0.5rem 0;
+}
+
+.order-not-found-message {
+  color: #6b7280;
+  margin: 0 0 2rem 0;
+}
+
+/* Grid Layout */
+.customer-order-detail-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 2rem;
+  align-items: start;
+}
+
+/* Main Content (Order Summary & Items) */
+.customer-order-detail-main {
+  display: flex;
+  flex-direction: column;
+}
+
+.customer-order-summary-card {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  border: 1px solid #e5e7eb;
+  overflow: hidden;
+}
+
+.customer-order-section-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #1f2937;
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid #f3f4f6;
+}
+
+.customer-order-summary-content {
+  padding: 1.5rem;
+}
+
+.customer-order-summary-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem 0;
+  border-bottom: 1px solid #f3f4f6;
+}
+
+.customer-order-summary-row:last-child {
+  border-bottom: none;
+}
+
+.customer-order-summary-label {
+  font-weight: 500;
+  color: #374151;
+  font-size: 0.875rem;
+}
+
+.customer-order-summary-with-icon {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.customer-order-summary-icon {
+  width: 1rem;
+  height: 1rem;
+  color: #6b7280;
+}
+
+.customer-order-summary-value {
+  color: #1f2937;
+  font-weight: 500;
+}
+
+.customer-order-total-amount {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #059669; /* Green for total amount */
+}
+
+.customer-order-tracking-number {
+  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+  background: #f3f4f6;
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  font-size: 0.875rem;
+  color: #1f2937;
+}
+
+/* Order Items Section */
+.customer-order-items-section {
+  border-top: 1px solid #e5e7eb;
+  padding: 1.5rem;
+}
+
+.customer-order-items-title {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #1f2937;
+  margin: 0 0 1rem 0;
+}
+
+.customer-order-items-list {
+  overflow: hidden;
+}
+
+.customer-order-items-ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.customer-order-item {
+  display: flex;
+  gap: 1rem;
+  padding: 1rem 0;
+  border-bottom: 1px solid #f3f4f6;
+}
+
+.customer-order-item:last-child {
+  border-bottom: none;
+}
+
+.customer-order-item-image {
+  flex-shrink: 0;
+  width: 80px;
+  height: 80px;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid #e5e7eb;
+}
+
+.customer-order-item-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.customer-order-item-details {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.customer-order-item-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 0.5rem;
+}
+
+.customer-order-item-header h3 {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #1f2937;
+  margin: 0;
+  flex: 1;
+}
+
+.customer-order-item-link {
+  color: #3b82f6;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.customer-order-item-link:hover {
+  color: #2563eb;
+  text-decoration: underline;
+}
+
+.customer-order-item-total {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #059669; /* Green for item total */
+  margin: 0;
+}
+
+.customer-order-item-quantity {
+  font-size: 0.875rem;
+  color: #6b7280;
+  margin: 0;
+}
+
+.customer-order-item-footer {
+  margin-top: 0.5rem;
+}
+
+.customer-order-item-brand {
+  font-size: 0.75rem;
+  color: #9ca3af;
+  margin: 0;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* Sidebar (Shipping & Payment) */
+.customer-order-detail-sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.customer-order-info-card {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  padding: 1.5rem;
+  border: 1px solid #e5e7eb;
+}
+
+.customer-order-info-title {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.customer-order-section-icon {
+  width: 1.25rem;
+  height: 1.25rem;
+  color: #6b7280;
+}
+
+.customer-order-info-item {
+  margin: 0 0 0.75rem 0;
+  font-size: 0.875rem;
+  color: #374151;
+}
+
+.customer-order-info-item:last-child {
+  margin-bottom: 0;
+}
+
+.customer-order-info-value {
+  font-weight: 500;
+  color: #1f2937;
+}
+
+.customer-order-payment-paid {
+  color: #059669; /* Green for paid status */
+}
+
+.customer-order-payment-unpaid {
+  color: #dc2626; /* Red for unpaid status */
+}
+
+.customer-order-shipping-address {
+  font-style: normal;
+  line-height: 1.6;
+}
+
+.customer-order-shipping-address p {
+  margin: 0 0 0.25rem 0;
+  color: #374151;
+  font-size: 0.875rem;
+}
+
+.customer-order-notes {
+  color: #374151;
+  font-size: 0.875rem;
+  line-height: 1.6;
+  margin: 0;
+  background: #f9fafb;
+  padding: 1rem;
+  border-radius: 8px;
+  border: 1px solid #e5e7eb;
+}
+
+/* Badge Styles (reused from global) */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.025em;
+}
+
+.badge-success {
+  background: #d1fae5;
+  color: #065f46;
+}
+
+.badge-warning {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.badge-danger {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+/* Mobile Responsive */
+@media (max-width: 1024px) {
+  .customer-order-detail-grid {
+    grid-template-columns: 1fr; /* Stack columns on smaller screens */
+  }
+}
+
+@media (max-width: 768px) {
+  .customer-order-detail-page {
+    padding: 1rem;
+  }
+  
+  .customer-order-detail-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+  
+  .customer-order-detail-title {
+    font-size: 1.5rem;
+  }
+  
+  .customer-order-summary-content,
+  .customer-order-items-section,
+  .customer-order-info-card {
+    padding: 1rem;
+  }
+  
+  .customer-order-summary-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+  
+  .customer-order-item {
+    flex-direction: column;
+    gap: 1rem;
+  }
+  
+  .customer-order-item-image {
+    width: 100%;
+    height: 200px;
+  }
+  
+  .customer-order-item-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+  
+  .customer-order-section-title {
+    font-size: 1rem;
+    margin-bottom: 1rem;
+  }
+  
+  .customer-order-info-item,
+  .customer-order-shipping-address p,
+  .customer-order-notes {
+    font-size: 0.8rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .customer-order-detail-title {
+    font-size: 1.25rem;
+  }
+  
+  .order-not-found-icon {
+    width: 4rem;
+    height: 4rem;
+  }
+  
+  .order-not-found-title {
+    font-size: 1.25rem;
+  }
+  
+  .order-not-found-message {
+    font-size: 0.875rem;
+  }
+}
