@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react'; // Import useCallback
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import chatService from '../../services/chatService';
 import { MessageSquare, Send, X, Loader2, Info, Coins, Mic, StopCircle } from 'lucide-react';
@@ -28,31 +28,38 @@ const ChatWidget = () => {
 
   const conversationId = isAuthenticated ? user?._id : 'anonymous';
 
-  // Wrap fetchChatHistory in useCallback to make it a stable function
-  // and include all its dependencies.
-  const fetchChatHistory = useCallback(async () => {
-    // Only fetch if authenticated and widget is open
-    if (isOpen && isAuthenticated) {
-      try {
-        const history = await chatService.getChatHistory(conversationId);
-        setMessages(history.messages);
-        // We don't need to call updateUser here; it's handled after sending a message
-        // or can be triggered by other components if balance changes independently.
-      } catch (error) {
-        console.error('Failed to fetch chat history:', error);
-        toast.error('Failed to load chat history.');
-      }
-    } else if (isOpen && !isAuthenticated) {
-      // Clear messages for anonymous users when opening the widget
-      setMessages([]);
-    }
-  }, [isOpen, isAuthenticated, conversationId]); // Dependencies for useCallback
-
-  // Use this useEffect to call fetchChatHistory when its dependencies change
+  // --- REVISED: Fetch chat history only on widget open/auth change ---
   useEffect(() => {
-    fetchChatHistory();
-  }, [fetchChatHistory]); // Now fetchChatHistory is a stable dependency
+    let isMounted = true; // Flag to prevent state updates on unmounted component
+    const loadChatHistory = async () => {
+      if (isOpen && isAuthenticated) {
+        try {
+          const history = await chatService.getChatHistory(conversationId);
+          if (isMounted) {
+            setMessages(history.messages);
+          }
+        } catch (error) {
+          console.error('Failed to fetch chat history:', error);
+          if (isMounted) {
+            toast.error('Failed to load chat history.');
+          }
+        }
+      } else if (isOpen && !isAuthenticated) {
+        // Clear messages for anonymous users when opening the widget
+        if (isMounted) {
+          setMessages([]);
+        }
+      }
+    };
 
+    loadChatHistory();
+
+    return () => {
+      isMounted = false; // Cleanup: component is unmounted
+    };
+  }, [isOpen, isAuthenticated, conversationId]); // Dependencies for initial load on open/auth change
+
+  // --- Keep this for scrolling ---
   useEffect(() => {
     scrollToBottom();
   }, [messages]);
@@ -67,6 +74,7 @@ const ChatWidget = () => {
 
     if (!messageToSend || isSending) return;
 
+    // Add user message immediately
     const userMessage = {
       role: 'user',
       content: messageToSend,
@@ -85,6 +93,7 @@ const ChatWidget = () => {
         aiResponse = await chatService.sendAnonymousMessage(messageToSend);
       }
 
+      // Add AI response after it's received
       setMessages((prev) => [
         ...prev,
         {
@@ -92,12 +101,13 @@ const ChatWidget = () => {
           content: aiResponse.content,
           createdAt: new Date().toISOString(),
           metadata: aiResponse.metadata,
+          // If backend returns a unique ID, use it here: _id: aiResponse._id
         },
       ]);
       toast.success('AI responded!');
       
-      // IMPORTANT: Update user context (including balance) after a successful interaction.
-      // This is crucial for immediate balance reflection and should happen after the message is displayed.
+      // Update user context (including balance) after a successful interaction.
+      // This is crucial for immediate balance reflection.
       await updateUser(); 
 
     } catch (error) {
@@ -112,7 +122,7 @@ const ChatWidget = () => {
         },
       ]);
     } finally {
-      setIsSending(false); // Hide typing indicator
+      setIsSending(false); // Hide typing indicator, guaranteed to run
     }
   };
 
@@ -155,8 +165,10 @@ const ChatWidget = () => {
 
     formattedContent = formattedContent.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
     formattedContent = formattedContent.replace(/\*(.*?)\*/g, '<em>$1</em>');
+    // Regex for URLs that start with http(s)://
     formattedContent = formattedContent.replace(/(https?:\/\/[^\s]+)/g, '<a href="$1" target="_blank" rel="noopener noreferrer" class="chat-link">$1</a>');
-    formattedContent = formattedContent.replace(/\[(.*?)\](?!https?:\/\/[^\s]+)(.*?)\)/g, '<a href="$2" class="chat-link">$1</a>'); // Fixed regex
+    // Regex for Markdown links [text](url) - ensure it doesn't re-process http(s) links
+    formattedContent = formattedContent.replace(/\[([^\]]+)\]\((?!https?:\/\/)([^\s)]+)\)/g, '<a href="$2" class="chat-link">$1</a>');
     formattedContent = formattedContent.replace(/\n/g, '<br />');
 
     return <div dangerouslySetInnerHTML={{ __html: formattedContent }} />;
@@ -198,8 +210,10 @@ const ChatWidget = () => {
               </div>
             )}
             {messages.map((msg, index) => (
+              // Use a stable key if possible (e.g., msg._id from backend)
+              // If msg._id is not available yet for a new local message, use createdAt, then fallback to index.
               <div
-                key={index} // Consider using a unique ID from the backend for keys if available
+                key={msg._id || msg.createdAt || index} 
                 className={`chat-message ${msg.role === 'user' ? 'chat-message-user' : 'chat-message-assistant'}`}
               >
                 <div className="chat-message-content">
@@ -264,4 +278,3 @@ const ChatWidget = () => {
 };
 
 export default ChatWidget;
-
