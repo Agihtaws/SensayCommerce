@@ -179,7 +179,7 @@ const AdminCustomerListPage = () => {
 
                     <td className="table-cell">
                       <Link to={`/admin/customers/${customer._id}`} className="link-secondary">
-                        <Edit size={16} /> View/Edit
+                        View
                       </Link>
                     </td>
                   </tr>

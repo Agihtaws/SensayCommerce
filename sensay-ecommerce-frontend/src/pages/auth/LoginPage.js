@@ -221,23 +221,7 @@ const LoginPage = () => {
                   </div>
                 </div>
               </div>
-              
-              <div className="login-simple-demo-account login-demo-customer">
-                <div className="login-simple-demo-content">
-                  <div className="login-simple-demo-left">
-                    <p className="login-demo-account-role">Customer</p>
-                    <p className="login-demo-account-email">
-                      swathiga@test.com
-                    </p>
-                  </div>
-                  <div className="login-simple-demo-right">
-                    <p className="login-demo-account-password">
-                      Test123!
-                    </p>
-                    <div className="login-demo-account-badge login-demo-badge-customer">Customer</div>
-                  </div>
-                </div>
-              </div>
+          
             </div>
           </div>
         </div>

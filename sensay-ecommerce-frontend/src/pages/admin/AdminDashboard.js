@@ -442,10 +442,6 @@ const AdminDashboard = () => {
               <Users size={16} />
               Manage Customers
             </Link>
-            <Link to="/admin/chat" className="btn btn-secondary">
-              <MessageSquare size={16} />
-              Sensay Chat
-            </Link>
           </div>
         </div>
       </div>

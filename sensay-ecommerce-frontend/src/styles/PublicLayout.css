@@ -1,6 +1,6 @@
 /* src/styles/PublicLayout.css */
 .public-layout {
-  height: 100%;
+  min-height: 100vh; /* Changed from height: 100% to min-height: 100vh */
   display: flex;
   flex-direction: column;
   width: 100%;
@@ -257,6 +257,7 @@
 /* Main Content within PublicLayout: This is the content area for individual pages */
 .public-main {
   flex: 1;
+  min-height: 0; /* This helps with flexbox calculations */
 }
 
 /* Footer Styles */

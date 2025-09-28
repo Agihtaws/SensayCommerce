@@ -24,6 +24,7 @@ const AdminLayout = () => {
   const [realSensayBalance, setRealSensayBalance] = useState(0);
   const [adminMenuOpen, setAdminMenuOpen] = useState(false); 
   const adminMenuRef = useRef(null); 
+  const sidebarRef = useRef(null); // Ref for sidebar to handle clicks
 
   const { user, logout } = useAuth();
   const navigate = useNavigate();
@@ -39,6 +40,7 @@ const AdminLayout = () => {
     { name: 'Settings', href: '/admin/settings', icon: Settings },
   ];
 
+  // Fetch Sensay Balance
   useEffect(() => {
     const fetchSensayBalance = async () => {
       try {
@@ -53,99 +55,91 @@ const AdminLayout = () => {
     fetchSensayBalance();
   }, []);
 
+  // Handle Logout
   const handleLogout = () => {
     logout();
     navigate('/login');
     toast.success('Logged out successfully');
   };
 
+  // Check if current path matches navigation item
   const isCurrentPath = (path) => {
     return location.pathname.startsWith(path);
   };
 
+  // Toggle Admin User Dropdown Menu
   const toggleAdminMenu = () => {
     setAdminMenuOpen(prev => !prev);
   };
 
-  // Close admin menu when clicking outside
+  // Close admin user menu when clicking outside
   useEffect(() => {
-    const handleClickOutside = (event) => {
+    const handleClickOutsideAdminMenu = (event) => {
       if (adminMenuRef.current && !adminMenuRef.current.contains(event.target)) {
         setAdminMenuOpen(false);
       }
     };
 
-    document.addEventListener('mousedown', handleClickOutside);
+    document.addEventListener('mousedown', handleClickOutsideAdminMenu);
     return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener('mousedown', handleClickOutsideAdminMenu);
     };
   }, [adminMenuRef]);
+
+  // Close mobile sidebar when clicking outside
+  useEffect(() => {
+    const handleClickOutsideSidebar = (event) => {
+      // Only close if sidebar is open AND click is outside the sidebar itself
+      if (sidebarOpen && sidebarRef.current && !sidebarRef.current.contains(event.target)) {
+        setSidebarOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutsideSidebar);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutsideSidebar);
+    };
+  }, [sidebarOpen, sidebarRef]);
 
 
   return (
     <div className="admin-layout">
-      {/* Mobile sidebar overlay */}
+      {/* Mobile sidebar overlay - appears only when sidebar is open */}
       {sidebarOpen && (
-        <div className="mobile-sidebar-overlay" onClick={() => setSidebarOpen(false)}>
-          <div className={`mobile-sidebar ${sidebarOpen ? 'open' : ''}`} onClick={(e) => e.stopPropagation()}>
-            <button className="mobile-sidebar-close" onClick={() => setSidebarOpen(false)}>
-              <X size={20} />
-            </button>
-            
-            <div className="admin-sidebar-header">
-              <div className="admin-logo">
-                <div className="admin-logo-icon">
-                  <LayoutDashboard size={20} color="white" />
-                </div>
-                <span className="admin-logo-text">Sensay Admin</span>
-              </div>
-            </div>
-            
-            <nav className="admin-nav">
-              {navigation.map((item) => {
-                const Icon = item.icon;
-                return (
-                  <button
-                    key={item.name}
-                    onClick={() => {
-                      navigate(item.href);
-                      setSidebarOpen(false);
-                    }}
-                    className={`admin-nav-item ${isCurrentPath(item.href) ? 'active' : ''}`}
-                  >
-                    <Icon size={20} />
-                    {item.name}
-                  </button>
-                );
-              })}
-            </nav>
-          </div>
-        </div>
+        <div className="mobile-sidebar-overlay" onClick={() => setSidebarOpen(false)}></div>
       )}
 
-      {/* Desktop sidebar */}
-      <div className="admin-sidebar">
+      {/* Desktop & Mobile Sidebar */}
+      <div ref={sidebarRef} className={`admin-sidebar ${sidebarOpen ? 'open' : ''}`}>
+        {/* Mobile sidebar close button */}
+        {sidebarOpen && (
+          <button className="mobile-sidebar-close" onClick={() => setSidebarOpen(false)}>
+            <X size={20} />
+          </button>
+        )}
+        
         <div className="admin-sidebar-header">
-          <div className="admin-logo">
+          <Link to="/admin/dashboard" className="admin-logo" onClick={() => setSidebarOpen(false)}>
             <div className="admin-logo-icon">
               <LayoutDashboard size={20} color="white" />
             </div>
             <span className="admin-logo-text">Sensay Admin</span>
-          </div>
+          </Link>
         </div>
         
         <nav className="admin-nav">
           {navigation.map((item) => {
             const Icon = item.icon;
             return (
-              <button
+              <Link // Using Link for proper navigation
                 key={item.name}
-                onClick={() => navigate(item.href)}
+                to={item.href}
+                onClick={() => setSidebarOpen(false)} // Close sidebar on mobile after navigation
                 className={`admin-nav-item ${isCurrentPath(item.href) ? 'active' : ''}`}
               >
                 <Icon size={20} />
                 {item.name}
-              </button>
+              </Link>
             );
           })}
         </nav>
@@ -176,7 +170,6 @@ const AdminLayout = () => {
           
           <div className="admin-header-actions">
             <div className="admin-user-dropdown-container" ref={adminMenuRef}>
-              {/* This entire button is the toggle for the dropdown */}
               <button onClick={toggleAdminMenu} className="admin-user-menu-toggle">
                 <div className="admin-user-avatar">
                   {user?.firstName?.charAt(0) || 'A'}
@@ -189,15 +182,12 @@ const AdminLayout = () => {
 
               {adminMenuOpen && (
                 <div className="admin-user-dropdown-menu">
-                  {/* Admin Panel link */}
                   <Link to="/admin/dashboard" className="admin-dropdown-item" onClick={() => setAdminMenuOpen(false)}>
                     <LayoutDashboard size={16} /> Admin Panel
                   </Link>
-                  {/* Settings link */}
                   <Link to="/admin/settings" className="admin-dropdown-item" onClick={() => setAdminMenuOpen(false)}>
                     <Settings size={16} /> Settings
                   </Link>
-                  {/* Logout button */}
                   <button onClick={handleLogout} className="admin-dropdown-item logout-item">
                     <LogOut size={16} /> Logout
                   </button>

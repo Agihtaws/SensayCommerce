@@ -5,7 +5,7 @@
   align-items: center;
   justify-content: center;
   padding: 3rem 1rem;
-  min-height: 200px;
+  min-height: calc(100vh - 200px); /* This will push the footer down */
 }
 
 .loading-spinner {
@@ -78,6 +78,9 @@
   background: rgba(255, 255, 255, 0.8);
   z-index: 100;
 }
+
+/* Rest of your CSS stays the same... */
+
 
 /* Button loading state */
 .btn-loading {

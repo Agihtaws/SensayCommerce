@@ -78,9 +78,7 @@ const PublicLayout = () => {
             </div>
 
             <div className="public-header-actions">
-              <button className="public-action-btn search-btn">
-                <Search size={20} />
-              </button>
+              
 
               <button className="public-action-btn" onClick={() => navigate('/wishlist')}>
                 <Heart size={20} />

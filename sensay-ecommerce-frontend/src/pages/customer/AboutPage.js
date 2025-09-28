@@ -38,12 +38,7 @@ const AboutPage = () => {
         <p className="trust-text">
           Your trust and security are paramount. We utilize robust security measures to protect your personal information and ensure a safe shopping environment. Our transparent policies and commitment to customer satisfaction mean you can shop with complete peace of mind.
         </p>
-        <Link
-          to="/privacy"
-          className="btn btn-primary privacy-policy-btn"
-        >
-          View Privacy Policy
-        </Link>
+        
       </div>
 
       <div className="about-cta-section">

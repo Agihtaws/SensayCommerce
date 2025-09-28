@@ -57,8 +57,9 @@
   left: 0.75rem;
   top: 50%;
   transform: translateY(-50%);
-  color: #6b7280;
+  color: #6b7280; /* Make sure it's visible */
   pointer-events: none;
+  z-index: 2; /* Ensure it's above the input */
 }
 
 .search-input {
