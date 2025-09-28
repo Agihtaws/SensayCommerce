@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import chatService from '../../services/chatService';
 import { MessageSquare, Send, X, Loader2, Info, Coins, Mic, StopCircle } from 'lucide-react';
@@ -21,22 +21,63 @@ const ChatWidget = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState([]);
   const [inputMessage, setInputMessage] = useState('');
-  const [isSending, setIsSending] = useState(false);
   const [isRecording, setIsRecording] = useState(false);
   const [recordedText, setRecordedText] = useState('');
   const messagesEndRef = useRef(null);
 
+  // --- REVISED: Use useRef for isSending to avoid unnecessary re-renders ---
+  const isSendingRef = useRef(false); // Use ref to track sending state
+  const [showTypingIndicator, setShowTypingIndicator] = useState(false); // State for actual UI indicator
+
   const conversationId = isAuthenticated ? user?._id : 'anonymous';
 
+  // --- REVISED useEffect for loading chat history ---
   useEffect(() => {
-    if (isOpen && isAuthenticated) {
-      fetchChatHistory();
-    } else if (isOpen && !isAuthenticated) {
-      setMessages([]);
-    }
-  }, [isOpen, isAuthenticated]);
+    console.log('useEffect [isOpen, isAuthenticated, conversationId] triggered. IsOpen:', isOpen, 'Authenticated:', isAuthenticated, 'ConvId:', conversationId);
+    let isMounted = true; 
+    const loadChatHistory = async () => {
+      // Ensure we're not currently sending a message before re-fetching history
+      // This prevents the history re-fetch from wiping out a message being processed.
+      if (isSendingRef.current) {
+        console.log('loadChatHistory: Skipping history fetch because a message is currently sending.');
+        return; 
+      }
 
+      if (isOpen && isAuthenticated) {
+        console.log('Fetching chat history for authenticated user...');
+        try {
+          const history = await chatService.getChatHistory(conversationId);
+          console.log('Fetched chat history:', history.messages.length, 'messages');
+          if (isMounted) {
+            setMessages(history.messages);
+            console.log('setMessages called from loadChatHistory');
+          }
+        } catch (error) {
+          console.error('Failed to fetch chat history:', error);
+          if (isMounted) {
+            toast.error('Failed to load chat history.');
+          }
+        }
+      } else if (isOpen && !isAuthenticated) {
+        console.log('Clearing messages for anonymous user on widget open.');
+        if (isMounted) {
+          setMessages([]);
+          console.log('setMessages called to clear for anonymous');
+        }
+      }
+    };
+
+    loadChatHistory();
+
+    return () => {
+      isMounted = false;
+      console.log('Cleanup for useEffect [isOpen, isAuthenticated, conversationId]');
+    };
+  }, [isOpen, isAuthenticated, conversationId]); 
+
+  // --- Keep this for scrolling ---
   useEffect(() => {
+    console.log('useEffect [messages] triggered. Messages length:', messages.length);
     scrollToBottom();
   }, [messages]);
 
@@ -44,41 +85,44 @@ const ChatWidget = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
 
-  const fetchChatHistory = async () => {
-    try {
-      const history = await chatService.getChatHistory(conversationId);
-      setMessages(history.messages);
-      await updateUser();
-    } catch (error) {
-      console.error('Failed to fetch chat history:', error);
-      toast.error('Failed to load chat history.');
-    }
-  };
-
   const handleSendMessage = async (e) => {
     e?.preventDefault();
     const messageToSend = inputMessage.trim() || recordedText.trim();
 
-    if (!messageToSend || isSending) return;
+    if (!messageToSend || isSendingRef.current) { // Check ref for sending state
+      console.log('handleSendMessage: Aborted. Message empty or already sending.');
+      return;
+    }
 
+    // Add user message immediately to local state
     const userMessage = {
       role: 'user',
       content: messageToSend,
       createdAt: new Date().toISOString(),
     };
+    console.log('handleSendMessage: Adding user message to state:', userMessage.content);
     setMessages((prev) => [...prev, userMessage]);
     setInputMessage('');
     setRecordedText('');
-    setIsSending(true);
+    
+    // --- REVISED: Manage sending state with ref and typing indicator with state ---
+    isSendingRef.current = true; // Set ref immediately
+    console.log('handleSendMessage: Setting isSendingRef.current to true');
+    setShowTypingIndicator(true); // Show typing indicator
+    console.log('handleSendMessage: Setting showTypingIndicator to true');
 
     try {
       let aiResponse;
       if (isAuthenticated) {
+        console.log('handleSendMessage: Sending authenticated message...');
         aiResponse = await chatService.sendAuthenticatedMessage(messageToSend, conversationId);
       } else {
+        console.log('handleSendMessage: Sending anonymous message...');
         aiResponse = await chatService.sendAnonymousMessage(messageToSend);
       }
 
+      console.log('handleSendMessage: AI response received:', aiResponse.content);
+      // Add AI response to local state
       setMessages((prev) => [
         ...prev,
         {
@@ -88,12 +132,24 @@ const ChatWidget = () => {
           metadata: aiResponse.metadata,
         },
       ]);
+      console.log('handleSendMessage: setMessages called with AI response.');
       toast.success('AI responded!');
       
-      await updateUser(); 
+      if (isAuthenticated) {
+        console.log('handleSendMessage: Calling updateUser() for authenticated user.');
+        await updateUser(); 
+      }
 
     } catch (error) {
-      toast.error(error.message);
+      console.error('handleSendMessage: Error during AI communication:', error);
+      if (!isAuthenticated && error.message.includes('Insufficient balance')) {
+          toast.error('AI assistant is temporarily unavailable. Please try again later.');
+      } else if (!isAuthenticated && error.message.includes('System temporarily unavailable')) {
+          toast.error('AI assistant is temporarily unavailable. Please try again later.');
+      } else {
+          toast.error(error.message || 'An unexpected error occurred. Please try again.');
+      }
+      
       setMessages((prev) => [
         ...prev,
         {
@@ -103,8 +159,13 @@ const ChatWidget = () => {
           metadata: { model: 'error' },
         },
       ]);
+      console.log('handleSendMessage: setMessages called with error message.');
     } finally {
-      setIsSending(false);
+      // --- REVISED: Ensure typing indicator is hidden and ref is reset ---
+      isSendingRef.current = false; // Reset ref
+      console.log('handleSendMessage: Setting isSendingRef.current to false');
+      setShowTypingIndicator(false); // Hide typing indicator
+      console.log('handleSendMessage: Setting showTypingIndicator to false');
     }
   };
 
@@ -148,7 +209,7 @@ const ChatWidget = () => {
     formattedContent = formattedContent.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
     formattedContent = formattedContent.replace(/\*(.*?)\*/g, '<em>$1</em>');
     formattedContent = formattedContent.replace(/(https?:\/\/[^\s]+)/g, '<a href="$1" target="_blank" rel="noopener noreferrer" class="chat-link">$1</a>');
-    formattedContent = formattedContent.replace(/\[(.*?)\](?!https?:\/\/)(.*?)\)/g, '<a href="$2" class="chat-link">$1</a>');
+    formattedContent = formattedContent.replace(/\[([^\]]+)\]\((?!https?:\/\/)([^\s)]+)\)/g, '<a href="$2" class="chat-link">$1</a>');
     formattedContent = formattedContent.replace(/\n/g, '<br />');
 
     return <div dangerouslySetInnerHTML={{ __html: formattedContent }} />;
@@ -171,9 +232,11 @@ const ChatWidget = () => {
         <div className="chat-container">
           <div className="chat-header">
             <h3 className="chat-title">Sensay AI Assistant</h3>
-            <span className="chat-balance">
-              <Coins size={16} /> {sensayBalance?.toLocaleString() || 0} units
-            </span>
+            {isAuthenticated && (
+              <span className="chat-balance">
+                <Coins size={16} /> {sensayBalance?.toLocaleString() || 0} units
+              </span>
+            )}
           </div>
 
           <div className="chat-messages">
@@ -191,7 +254,7 @@ const ChatWidget = () => {
             )}
             {messages.map((msg, index) => (
               <div
-                key={index}
+                key={msg._id || msg.createdAt || index} 
                 className={`chat-message ${msg.role === 'user' ? 'chat-message-user' : 'chat-message-assistant'}`}
               >
                 <div className="chat-message-content">
@@ -202,7 +265,8 @@ const ChatWidget = () => {
                 </div>
               </div>
             ))}
-            {isSending && (
+            {/* --- REVISED: Use showTypingIndicator state for UI display --- */}
+            {showTypingIndicator && ( 
               <div className="chat-message chat-message-assistant">
                 <div className="chat-message-content chat-typing">
                   <Loader2 size={16} className="spinner" />
@@ -220,7 +284,7 @@ const ChatWidget = () => {
                 onClick={isRecording ? stopRecording : startRecording}
                 className={`chat-voice-btn ${isRecording ? 'recording' : ''}`}
                 title={isRecording ? "Stop Recording" : "Start Voice Message"}
-                disabled={isSending}
+                disabled={isSendingRef.current} // Check ref for disabling
               >
                 {isRecording ? <StopCircle size={20} /> : <Mic size={20} />}
               </button>
@@ -230,14 +294,14 @@ const ChatWidget = () => {
               type="text"
               value={inputMessage}
               onChange={(e) => setInputMessage(e.target.value)}
-              placeholder={isRecording ? "Listening..." : (isAuthenticated ? "Type your message..." : "Chat as guest (login for full features)")}
+              placeholder={isRecording ? "Listening..." : (isAuthenticated ? "Type your message..." : "Chat as guest")}
               className="chat-input"
-              disabled={isSending || isRecording}
+              disabled={isSendingRef.current || isRecording} // Check ref for disabling
             />
             <button
               type="submit"
               className="chat-send-btn"
-              disabled={isSending || (!inputMessage.trim() && !recordedText.trim())}
+              disabled={isSendingRef.current || (!inputMessage.trim() && !recordedText.trim())} // Check ref for disabling
             >
               <Send size={20} />
             </button>
