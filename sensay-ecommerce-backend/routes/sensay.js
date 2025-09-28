@@ -77,6 +77,26 @@ router.post('/knowledge', verifyAdmin, async (req, res) => {
   }
 });
 
+// In your sensayRoutes.js, update the manage-catalog route:
+router.post('/manage-catalog', verifyAdmin, async (req, res) => {
+  try {
+    await sensayService.manageCatalogState(req.user._id); // <- Pass admin user ID
+    
+    res.json({
+      success: true,
+      message: 'Catalog state managed successfully'
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      error: 'Failed to manage catalog state',
+      details: error.message
+    });
+  }
+});
+
+
+
 // Update knowledge (Admin only)
 router.put('/knowledge/:knowledgeId', verifyAdmin, async (req, res) => {
   try {
