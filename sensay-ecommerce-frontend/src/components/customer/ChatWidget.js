@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import chatService from '../../services/chatService';
 import { MessageSquare, Send, X, Loader2, Info, Coins, Mic, StopCircle } from 'lucide-react';
@@ -28,15 +28,19 @@ const ChatWidget = () => {
 
   const conversationId = isAuthenticated ? user?._id : 'anonymous';
 
-  // --- REVISED: Fetch chat history only on widget open/auth change ---
+  // --- REVISED useEffect for loading chat history ---
   useEffect(() => {
-    let isMounted = true; // Flag to prevent state updates on unmounted component
+    console.log('useEffect [isOpen, isAuthenticated, conversationId] triggered. IsOpen:', isOpen, 'Authenticated:', isAuthenticated, 'ConvId:', conversationId);
+    let isMounted = true; 
     const loadChatHistory = async () => {
       if (isOpen && isAuthenticated) {
+        console.log('Fetching chat history for authenticated user...');
         try {
           const history = await chatService.getChatHistory(conversationId);
+          console.log('Fetched chat history:', history.messages.length, 'messages');
           if (isMounted) {
             setMessages(history.messages);
+            console.log('setMessages called from loadChatHistory');
           }
         } catch (error) {
           console.error('Failed to fetch chat history:', error);
@@ -45,9 +49,10 @@ const ChatWidget = () => {
           }
         }
       } else if (isOpen && !isAuthenticated) {
-        // Clear messages for anonymous users when opening the widget
+        console.log('Clearing messages for anonymous user on widget open.');
         if (isMounted) {
           setMessages([]);
+          console.log('setMessages called to clear for anonymous');
         }
       }
     };
@@ -55,12 +60,14 @@ const ChatWidget = () => {
     loadChatHistory();
 
     return () => {
-      isMounted = false; // Cleanup: component is unmounted
+      isMounted = false;
+      console.log('Cleanup for useEffect [isOpen, isAuthenticated, conversationId]');
     };
-  }, [isOpen, isAuthenticated, conversationId]); // Dependencies for initial load on open/auth change
+  }, [isOpen, isAuthenticated, conversationId]); 
 
   // --- Keep this for scrolling ---
   useEffect(() => {
+    console.log('useEffect [messages] triggered. Messages length:', messages.length);
     scrollToBottom();
   }, [messages]);
 
@@ -72,28 +79,34 @@ const ChatWidget = () => {
     e?.preventDefault();
     const messageToSend = inputMessage.trim() || recordedText.trim();
 
-    if (!messageToSend || isSending) return;
+    if (!messageToSend || isSending) {
+      console.log('handleSendMessage: Aborted. Message empty or already sending.');
+      return;
+    }
 
-    // Add user message immediately
     const userMessage = {
       role: 'user',
       content: messageToSend,
       createdAt: new Date().toISOString(),
     };
+    console.log('handleSendMessage: Adding user message to state:', userMessage.content);
     setMessages((prev) => [...prev, userMessage]);
     setInputMessage('');
     setRecordedText('');
-    setIsSending(true); // Show typing indicator
+    console.log('handleSendMessage: Setting isSending to true (show typing indicator)');
+    setIsSending(true); 
 
     try {
       let aiResponse;
       if (isAuthenticated) {
+        console.log('handleSendMessage: Sending authenticated message...');
         aiResponse = await chatService.sendAuthenticatedMessage(messageToSend, conversationId);
       } else {
+        console.log('handleSendMessage: Sending anonymous message...');
         aiResponse = await chatService.sendAnonymousMessage(messageToSend);
       }
 
-      // Add AI response after it's received
+      console.log('handleSendMessage: AI response received:', aiResponse.content);
       setMessages((prev) => [
         ...prev,
         {
@@ -101,16 +114,16 @@ const ChatWidget = () => {
           content: aiResponse.content,
           createdAt: new Date().toISOString(),
           metadata: aiResponse.metadata,
-          // If backend returns a unique ID, use it here: _id: aiResponse._id
         },
       ]);
+      console.log('handleSendMessage: setMessages called with AI response.');
       toast.success('AI responded!');
       
-      // Update user context (including balance) after a successful interaction.
-      // This is crucial for immediate balance reflection.
+      console.log('handleSendMessage: Calling updateUser() to refresh balance/user context.');
       await updateUser(); 
 
     } catch (error) {
+      console.error('handleSendMessage: Error during AI communication:', error);
       toast.error(error.message);
       setMessages((prev) => [
         ...prev,
@@ -121,8 +134,10 @@ const ChatWidget = () => {
           metadata: { model: 'error' },
         },
       ]);
+      console.log('handleSendMessage: setMessages called with error message.');
     } finally {
-      setIsSending(false); // Hide typing indicator, guaranteed to run
+      console.log('handleSendMessage: Setting isSending to false (hide typing indicator)');
+      setIsSending(false); 
     }
   };
 
@@ -165,10 +180,8 @@ const ChatWidget = () => {
 
     formattedContent = formattedContent.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
     formattedContent = formattedContent.replace(/\*(.*?)\*/g, '<em>$1</em>');
-    // Regex for URLs that start with http(s)://
     formattedContent = formattedContent.replace(/(https?:\/\/[^\s]+)/g, '<a href="$1" target="_blank" rel="noopener noreferrer" class="chat-link">$1</a>');
-    // Regex for Markdown links [text](url) - ensure it doesn't re-process http(s) links
-    formattedContent = formattedContent.replace(/\[([^\]]+)\]\((?!https?:\/\/)([^\s)]+)\)/g, '<a href="$2" class="chat-link">$1</a>');
+    formattedContent = formattedContent.replace(/\[(.*?)\](?!https?:\/\/)(.*?)\)/g, '<a href="$2" class="chat-link">$1</a>');
     formattedContent = formattedContent.replace(/\n/g, '<br />');
 
     return <div dangerouslySetInnerHTML={{ __html: formattedContent }} />;
@@ -210,10 +223,8 @@ const ChatWidget = () => {
               </div>
             )}
             {messages.map((msg, index) => (
-              // Use a stable key if possible (e.g., msg._id from backend)
-              // If msg._id is not available yet for a new local message, use createdAt, then fallback to index.
               <div
-                key={msg._id || msg.createdAt || index} 
+                key={index}
                 className={`chat-message ${msg.role === 'user' ? 'chat-message-user' : 'chat-message-assistant'}`}
               >
                 <div className="chat-message-content">
