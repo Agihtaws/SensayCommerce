@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react'; // Import useCallback
 import { useAuth } from '../../context/AuthContext';
 import chatService from '../../services/chatService';
 import { MessageSquare, Send, X, Loader2, Info, Coins, Mic, StopCircle } from 'lucide-react';
@@ -28,13 +28,30 @@ const ChatWidget = () => {
 
   const conversationId = isAuthenticated ? user?._id : 'anonymous';
 
-  useEffect(() => {
+  // Wrap fetchChatHistory in useCallback to make it a stable function
+  // and include all its dependencies.
+  const fetchChatHistory = useCallback(async () => {
+    // Only fetch if authenticated and widget is open
     if (isOpen && isAuthenticated) {
-      fetchChatHistory();
+      try {
+        const history = await chatService.getChatHistory(conversationId);
+        setMessages(history.messages);
+        // We don't need to call updateUser here; it's handled after sending a message
+        // or can be triggered by other components if balance changes independently.
+      } catch (error) {
+        console.error('Failed to fetch chat history:', error);
+        toast.error('Failed to load chat history.');
+      }
     } else if (isOpen && !isAuthenticated) {
+      // Clear messages for anonymous users when opening the widget
       setMessages([]);
     }
-  }, [isOpen, isAuthenticated]);
+  }, [isOpen, isAuthenticated, conversationId]); // Dependencies for useCallback
+
+  // Use this useEffect to call fetchChatHistory when its dependencies change
+  useEffect(() => {
+    fetchChatHistory();
+  }, [fetchChatHistory]); // Now fetchChatHistory is a stable dependency
 
   useEffect(() => {
     scrollToBottom();
@@ -42,17 +59,6 @@ const ChatWidget = () => {
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  };
-
-  const fetchChatHistory = async () => {
-    try {
-      const history = await chatService.getChatHistory(conversationId);
-      setMessages(history.messages);
-      await updateUser();
-    } catch (error) {
-      console.error('Failed to fetch chat history:', error);
-      toast.error('Failed to load chat history.');
-    }
   };
 
   const handleSendMessage = async (e) => {
@@ -69,7 +75,7 @@ const ChatWidget = () => {
     setMessages((prev) => [...prev, userMessage]);
     setInputMessage('');
     setRecordedText('');
-    setIsSending(true);
+    setIsSending(true); // Show typing indicator
 
     try {
       let aiResponse;
@@ -90,6 +96,8 @@ const ChatWidget = () => {
       ]);
       toast.success('AI responded!');
       
+      // IMPORTANT: Update user context (including balance) after a successful interaction.
+      // This is crucial for immediate balance reflection and should happen after the message is displayed.
       await updateUser(); 
 
     } catch (error) {
@@ -104,7 +112,7 @@ const ChatWidget = () => {
         },
       ]);
     } finally {
-      setIsSending(false);
+      setIsSending(false); // Hide typing indicator
     }
   };
 
@@ -148,7 +156,7 @@ const ChatWidget = () => {
     formattedContent = formattedContent.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
     formattedContent = formattedContent.replace(/\*(.*?)\*/g, '<em>$1</em>');
     formattedContent = formattedContent.replace(/(https?:\/\/[^\s]+)/g, '<a href="$1" target="_blank" rel="noopener noreferrer" class="chat-link">$1</a>');
-    formattedContent = formattedContent.replace(/\[(.*?)\](?!https?:\/\/)(.*?)\)/g, '<a href="$2" class="chat-link">$1</a>');
+    formattedContent = formattedContent.replace(/\[(.*?)\](?!https?:\/\/[^\s]+)(.*?)\)/g, '<a href="$2" class="chat-link">$1</a>'); // Fixed regex
     formattedContent = formattedContent.replace(/\n/g, '<br />');
 
     return <div dangerouslySetInnerHTML={{ __html: formattedContent }} />;
@@ -191,7 +199,7 @@ const ChatWidget = () => {
             )}
             {messages.map((msg, index) => (
               <div
-                key={index}
+                key={index} // Consider using a unique ID from the backend for keys if available
                 className={`chat-message ${msg.role === 'user' ? 'chat-message-user' : 'chat-message-assistant'}`}
               >
                 <div className="chat-message-content">
@@ -256,3 +264,4 @@ const ChatWidget = () => {
 };
 
 export default ChatWidget;
+
