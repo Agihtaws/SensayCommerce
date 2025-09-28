@@ -79,7 +79,7 @@ class SensayService {
     } catch (error) {
       if (error.response?.status === 404) {
         try {
-          const createResponse = await this.axiosInstance.post('/v1/users', {
+          const createResponse = await this.axiosInstance.post(`/v1/users`, {
             id: this.systemUserId
           });
           console.log('✅ System user created:', createResponse.data);
@@ -106,7 +106,7 @@ class SensayService {
 
       await this.ensureSystemUser();
 
-      const response = await this.axiosInstance.get('/v1/replicas', {
+      const response = await this.axiosInstance.get(`/v1/replicas`, {
         headers: {
           'X-USER-ID': this.systemUserId
         }
@@ -122,19 +122,32 @@ class SensayService {
         return existingReplica;
       }
 
-      const createResponse = await this.axiosInstance.post('/v1/replicas', {
-        name: this.replicaName,
-        shortDescription: 'AI assistant for e-commerce platform',
-        greeting: 'Hello! I\'m your e-commerce assistant. How can I help you find the perfect product today?',
-        ownerID: this.systemUserId,
-        private: false,
-        slug: 'ecommerce-assistant',
-        llm: {
-          provider: 'openai',
-          model: 'gpt-4o'
-        },
-        instructions: 'You are an intelligent e-commerce assistant named E-commerce Assistant. Your primary goal is to help customers find products, answer questions about products, and provide excellent customer service. Always be polite, informative, and helpful. When recommending products, always refer to the product names and prices available in your knowledge base. If you don\'t have enough information for a specific request, suggest browsing the product catalog or contacting customer support. Provide links in Markdown format like [text](/path).'
-      });
+      // In your sensayService.js, update the replica creation:
+const createResponse = await this.axiosInstance.post(`/v1/replicas`, {
+  name: this.replicaName,
+  shortDescription: 'AI assistant for e-commerce platform',
+  greeting: 'Hello! I\'m your e-commerce assistant. How can I help you find the perfect product today?',
+  ownerID: this.systemUserId,
+  private: false,
+  slug: this.replicaName.toLowerCase().replace(/ /g, '-'),
+  llm: {
+    provider: 'openai',
+    model: 'gpt-4o',
+    instructions: `You are a strict e-commerce assistant for Sensay Shop. You MUST ONLY use information from your knowledge base to answer questions about products.
+
+CRITICAL RULES:
+1. If your knowledge base contains NO products, you MUST respond: "Currently, there are no products available in our catalog. Please check back later or contact support."
+2. If asked about a specific product NOT in your knowledge base, respond: "I don't have information about that product in our current catalog."
+3. NEVER invent, hallucinate, or use general knowledge about products.
+4. ONLY mention products that are explicitly listed in your knowledge base.
+5. For general questions about categories, ONLY mention categories if you have actual products in those categories.
+
+For user account questions (cart, orders, wishlist), use the provided user context.
+
+REMEMBER: Your knowledge base is your ONLY source of product information.`
+  }
+});
+
 
       console.log('✅ Replica created:', createResponse.data);
       this.replicaUUID = createResponse.data.uuid;
@@ -226,6 +239,60 @@ class SensayService {
       throw error;
     }
   }
+
+  // Replace this function in your sensayService.js:
+async manageCatalogState(adminUserId = null) {
+  try {
+    const Product = require('../models/Product');
+    const User = require('../models/User');
+    
+    // Get admin user ID if not provided
+    let userId = adminUserId;
+    if (!userId) {
+      const adminUser = await User.findOne({ role: 'admin' });
+      if (!adminUser) {
+        throw new Error('No admin user found for system operations');
+      }
+      userId = adminUser._id;
+    }
+    
+    const activeProducts = await Product.find({ isActive: true });
+    
+    if (activeProducts.length === 0) {
+      // Catalog is empty - add empty state knowledge
+      await this.addKnowledge(
+        userId, // <- NOW USING PROPER ObjectId
+        "IMPORTANT: The product catalog is currently empty. There are no products available for purchase. When customers ask about products, inform them that no products are currently listed and they should check back later.",
+        'catalog_state'
+      );
+      console.log('✅ Empty catalog state added to Sensay');
+    } else {
+      // Catalog has products - ensure all are synced
+      let syncCount = 0;
+      for (const product of activeProducts) {
+        if (!product.sensayKnowledgeId || product.sensayStatus !== 'synced') {
+          try {
+            const knowledgeContent = product.toSensayKnowledge();
+            const result = await this.addKnowledge(userId, knowledgeContent, 'product');
+            
+            product.sensayKnowledgeId = result.knowledgeBaseID;
+            product.sensayLastSynced = new Date();
+            product.sensayStatus = 'synced';
+            await product.save();
+            syncCount++;
+          } catch (syncError) {
+            console.error(`❌ Failed to sync product ${product.name}:`, syncError.message);
+          }
+        }
+      }
+      console.log(`✅ Catalog state managed: ${activeProducts.length} products, ${syncCount} synced`);
+    }
+  } catch (error) {
+    console.error('❌ Catalog state management failed:', error);
+    throw error;
+  }
+}
+
 
   async getKnowledgeBaseEntryStatus(knowledgeBaseID) {
     try {
