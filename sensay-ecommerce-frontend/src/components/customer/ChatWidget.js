@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import chatService from '../../services/chatService';
 import { MessageSquare, Send, X, Loader2, Info, Coins, Mic, StopCircle } from 'lucide-react';
@@ -26,6 +26,8 @@ const ChatWidget = () => {
   const [recordedText, setRecordedText] = useState('');
   const messagesEndRef = useRef(null);
 
+  // For anonymous users, conversationId is 'anonymous'.
+  // For authenticated users, it's their user ID.
   const conversationId = isAuthenticated ? user?._id : 'anonymous';
 
   // --- REVISED useEffect for loading chat history ---
@@ -33,6 +35,7 @@ const ChatWidget = () => {
     console.log('useEffect [isOpen, isAuthenticated, conversationId] triggered. IsOpen:', isOpen, 'Authenticated:', isAuthenticated, 'ConvId:', conversationId);
     let isMounted = true; 
     const loadChatHistory = async () => {
+      // Only fetch history if authenticated AND widget is open
       if (isOpen && isAuthenticated) {
         console.log('Fetching chat history for authenticated user...');
         try {
@@ -49,6 +52,7 @@ const ChatWidget = () => {
           }
         }
       } else if (isOpen && !isAuthenticated) {
+        // When widget opens for an anonymous user, clear any previous messages
         console.log('Clearing messages for anonymous user on widget open.');
         if (isMounted) {
           setMessages([]);
@@ -84,6 +88,7 @@ const ChatWidget = () => {
       return;
     }
 
+    // Add user message immediately to local state
     const userMessage = {
       role: 'user',
       content: messageToSend,
@@ -107,6 +112,7 @@ const ChatWidget = () => {
       }
 
       console.log('handleSendMessage: AI response received:', aiResponse.content);
+      // Add AI response to local state
       setMessages((prev) => [
         ...prev,
         {
@@ -119,12 +125,24 @@ const ChatWidget = () => {
       console.log('handleSendMessage: setMessages called with AI response.');
       toast.success('AI responded!');
       
-      console.log('handleSendMessage: Calling updateUser() to refresh balance/user context.');
-      await updateUser(); 
+      // Only update user context if authenticated
+      if (isAuthenticated) {
+        console.log('handleSendMessage: Calling updateUser() for authenticated user.');
+        await updateUser(); 
+      }
 
     } catch (error) {
       console.error('handleSendMessage: Error during AI communication:', error);
-      toast.error(error.message);
+      // IMPORTANT: Check for specific error types for anonymous users
+      if (!isAuthenticated && error.message.includes('Insufficient balance')) {
+          toast.error('AI assistant is temporarily unavailable. Please try again later.');
+      } else if (!isAuthenticated && error.message.includes('System temporarily unavailable')) {
+          toast.error('AI assistant is temporarily unavailable. Please try again later.');
+      } else {
+          // For other errors or authenticated users, use generic error message
+          toast.error(error.message || 'An unexpected error occurred. Please try again.');
+      }
+      
       setMessages((prev) => [
         ...prev,
         {
@@ -181,12 +199,13 @@ const ChatWidget = () => {
     formattedContent = formattedContent.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
     formattedContent = formattedContent.replace(/\*(.*?)\*/g, '<em>$1</em>');
     formattedContent = formattedContent.replace(/(https?:\/\/[^\s]+)/g, '<a href="$1" target="_blank" rel="noopener noreferrer" class="chat-link">$1</a>');
-    formattedContent = formattedContent.replace(/\[(.*?)\](?!https?:\/\/)(.*?)\)/g, '<a href="$2" class="chat-link">$1</a>');
+    formattedContent = formattedContent.replace(/\[([^\]]+)\]\((?!https?:\/\/)([^\s)]+)\)/g, '<a href="$2" class="chat-link">$1</a>');
     formattedContent = formattedContent.replace(/\n/g, '<br />');
 
     return <div dangerouslySetInnerHTML={{ __html: formattedContent }} />;
   };
 
+  // Admin users should not see the chat widget
   if (user?.role === 'admin') {
     return null;
   }
@@ -204,9 +223,12 @@ const ChatWidget = () => {
         <div className="chat-container">
           <div className="chat-header">
             <h3 className="chat-title">Sensay AI Assistant</h3>
-            <span className="chat-balance">
-              <Coins size={16} /> {sensayBalance?.toLocaleString() || 0} units
-            </span>
+            {/* Display balance only if authenticated */}
+            {isAuthenticated && (
+              <span className="chat-balance">
+                <Coins size={16} /> {sensayBalance?.toLocaleString() || 0} units
+              </span>
+            )}
           </div>
 
           <div className="chat-messages">
@@ -224,7 +246,7 @@ const ChatWidget = () => {
             )}
             {messages.map((msg, index) => (
               <div
-                key={index}
+                key={msg._id || msg.createdAt || index} 
                 className={`chat-message ${msg.role === 'user' ? 'chat-message-user' : 'chat-message-assistant'}`}
               >
                 <div className="chat-message-content">
@@ -263,7 +285,7 @@ const ChatWidget = () => {
               type="text"
               value={inputMessage}
               onChange={(e) => setInputMessage(e.target.value)}
-              placeholder={isRecording ? "Listening..." : (isAuthenticated ? "Type your message..." : "Chat as guest (login for full features)")}
+              placeholder={isRecording ? "Listening..." : (isAuthenticated ? "Type your message..." : "Chat as guest")}
               className="chat-input"
               disabled={isSending || isRecording}
             />
@@ -276,6 +298,7 @@ const ChatWidget = () => {
             </button>
           </form>
 
+          {/* Low balance warning for authenticated customers only */}
           {isAuthenticated && user?.role === 'customer' && sensayBalance !== undefined && sensayBalance < 50 && (
             <div className="chat-warning">
               <Info size={16} />
