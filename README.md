@@ -7,7 +7,7 @@
 | Live Frontend Application | [https://sensaycommerce.onrender.com/](https://sensaycommerce.onrender.com/)                     |
 | Backend API Base URL      | [https://sensay-backend.onrender.com/api/health](https://sensay-backend.onrender.com/api/health) |
 | GitHub Repository         | [https://github.com/Agihtaws/SensayCommerce](https://github.com/Agihtaws/SensayCommerce)         |
-| Demo Video                | [YOUR_DEMO_VIDEO_LINK]                                                                           |
+| Demo Video                | [https://youtu.be/yVAbpy0n6Ac](https://youtu.be/yVAbpy0n6Ac)                                                                          |
 
 ---
 
@@ -204,12 +204,6 @@ Open your browser at [http://localhost:3000](http://localhost:3000).
 
 ---
 
-## 🖼️ Screenshots & Media
-
-* [YOUR_LOGO_IMAGE_URL]
-  Include app screenshots or key visuals for clarity.
-
----
 
 ## 📈 Future Enhancements
 
