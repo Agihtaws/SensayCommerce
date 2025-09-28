@@ -21,13 +21,19 @@ const ChatWidget = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState([]);
   const [inputMessage, setInputMessage] = useState('');
-  const [isSending, setIsSending] = useState(false);
   const [isRecording, setIsRecording] = useState(false);
   const [recordedText, setRecordedText] = useState('');
   const messagesEndRef = useRef(null);
 
+<<<<<<< HEAD
+  // --- REVISED: Use useRef for isSending to avoid unnecessary re-renders ---
+  const isSendingRef = useRef(false); // Use ref to track sending state
+  const [showTypingIndicator, setShowTypingIndicator] = useState(false); // State for actual UI indicator
+
+=======
   // For anonymous users, conversationId is 'anonymous'.
   // For authenticated users, it's their user ID.
+>>>>>>> 324ffdcbbff9deaa336e20b500836429c0662d67
   const conversationId = isAuthenticated ? user?._id : 'anonymous';
 
   // --- REVISED useEffect for loading chat history ---
@@ -35,6 +41,39 @@ const ChatWidget = () => {
     console.log('useEffect [isOpen, isAuthenticated, conversationId] triggered. IsOpen:', isOpen, 'Authenticated:', isAuthenticated, 'ConvId:', conversationId);
     let isMounted = true; 
     const loadChatHistory = async () => {
+<<<<<<< HEAD
+      // Ensure we're not currently sending a message before re-fetching history
+      // This prevents the history re-fetch from wiping out a message being processed.
+      if (isSendingRef.current) {
+        console.log('loadChatHistory: Skipping history fetch because a message is currently sending.');
+        return; 
+      }
+
+      if (isOpen && isAuthenticated) {
+        console.log('Fetching chat history for authenticated user...');
+        try {
+          const history = await chatService.getChatHistory(conversationId);
+          console.log('Fetched chat history:', history.messages.length, 'messages');
+          if (isMounted) {
+            setMessages(history.messages);
+            console.log('setMessages called from loadChatHistory');
+          }
+        } catch (error) {
+          console.error('Failed to fetch chat history:', error);
+          if (isMounted) {
+            toast.error('Failed to load chat history.');
+          }
+        }
+      } else if (isOpen && !isAuthenticated) {
+        console.log('Clearing messages for anonymous user on widget open.');
+        if (isMounted) {
+          setMessages([]);
+          console.log('setMessages called to clear for anonymous');
+        }
+      }
+    };
+
+=======
       // Only fetch history if authenticated AND widget is open
       if (isOpen && isAuthenticated) {
         console.log('Fetching chat history for authenticated user...');
@@ -61,6 +100,7 @@ const ChatWidget = () => {
       }
     };
 
+>>>>>>> 324ffdcbbff9deaa336e20b500836429c0662d67
     loadChatHistory();
 
     return () => {
@@ -83,7 +123,11 @@ const ChatWidget = () => {
     e?.preventDefault();
     const messageToSend = inputMessage.trim() || recordedText.trim();
 
+<<<<<<< HEAD
+    if (!messageToSend || isSendingRef.current) { // Check ref for sending state
+=======
     if (!messageToSend || isSending) {
+>>>>>>> 324ffdcbbff9deaa336e20b500836429c0662d67
       console.log('handleSendMessage: Aborted. Message empty or already sending.');
       return;
     }
@@ -98,8 +142,17 @@ const ChatWidget = () => {
     setMessages((prev) => [...prev, userMessage]);
     setInputMessage('');
     setRecordedText('');
+<<<<<<< HEAD
+    
+    // --- REVISED: Manage sending state with ref and typing indicator with state ---
+    isSendingRef.current = true; // Set ref immediately
+    console.log('handleSendMessage: Setting isSendingRef.current to true');
+    setShowTypingIndicator(true); // Show typing indicator
+    console.log('handleSendMessage: Setting showTypingIndicator to true');
+=======
     console.log('handleSendMessage: Setting isSending to true (show typing indicator)');
     setIsSending(true); 
+>>>>>>> 324ffdcbbff9deaa336e20b500836429c0662d67
 
     try {
       let aiResponse;
@@ -125,7 +178,10 @@ const ChatWidget = () => {
       console.log('handleSendMessage: setMessages called with AI response.');
       toast.success('AI responded!');
       
+<<<<<<< HEAD
+=======
       // Only update user context if authenticated
+>>>>>>> 324ffdcbbff9deaa336e20b500836429c0662d67
       if (isAuthenticated) {
         console.log('handleSendMessage: Calling updateUser() for authenticated user.');
         await updateUser(); 
@@ -133,13 +189,19 @@ const ChatWidget = () => {
 
     } catch (error) {
       console.error('handleSendMessage: Error during AI communication:', error);
+<<<<<<< HEAD
+=======
       // IMPORTANT: Check for specific error types for anonymous users
+>>>>>>> 324ffdcbbff9deaa336e20b500836429c0662d67
       if (!isAuthenticated && error.message.includes('Insufficient balance')) {
           toast.error('AI assistant is temporarily unavailable. Please try again later.');
       } else if (!isAuthenticated && error.message.includes('System temporarily unavailable')) {
           toast.error('AI assistant is temporarily unavailable. Please try again later.');
       } else {
+<<<<<<< HEAD
+=======
           // For other errors or authenticated users, use generic error message
+>>>>>>> 324ffdcbbff9deaa336e20b500836429c0662d67
           toast.error(error.message || 'An unexpected error occurred. Please try again.');
       }
       
@@ -154,8 +216,16 @@ const ChatWidget = () => {
       ]);
       console.log('handleSendMessage: setMessages called with error message.');
     } finally {
+<<<<<<< HEAD
+      // --- REVISED: Ensure typing indicator is hidden and ref is reset ---
+      isSendingRef.current = false; // Reset ref
+      console.log('handleSendMessage: Setting isSendingRef.current to false');
+      setShowTypingIndicator(false); // Hide typing indicator
+      console.log('handleSendMessage: Setting showTypingIndicator to false');
+=======
       console.log('handleSendMessage: Setting isSending to false (hide typing indicator)');
       setIsSending(false); 
+>>>>>>> 324ffdcbbff9deaa336e20b500836429c0662d67
     }
   };
 
@@ -223,7 +293,10 @@ const ChatWidget = () => {
         <div className="chat-container">
           <div className="chat-header">
             <h3 className="chat-title">Sensay AI Assistant</h3>
+<<<<<<< HEAD
+=======
             {/* Display balance only if authenticated */}
+>>>>>>> 324ffdcbbff9deaa336e20b500836429c0662d67
             {isAuthenticated && (
               <span className="chat-balance">
                 <Coins size={16} /> {sensayBalance?.toLocaleString() || 0} units
@@ -257,7 +330,8 @@ const ChatWidget = () => {
                 </div>
               </div>
             ))}
-            {isSending && (
+            {/* --- REVISED: Use showTypingIndicator state for UI display --- */}
+            {showTypingIndicator && ( 
               <div className="chat-message chat-message-assistant">
                 <div className="chat-message-content chat-typing">
                   <Loader2 size={16} className="spinner" />
@@ -275,7 +349,7 @@ const ChatWidget = () => {
                 onClick={isRecording ? stopRecording : startRecording}
                 className={`chat-voice-btn ${isRecording ? 'recording' : ''}`}
                 title={isRecording ? "Stop Recording" : "Start Voice Message"}
-                disabled={isSending}
+                disabled={isSendingRef.current} // Check ref for disabling
               >
                 {isRecording ? <StopCircle size={20} /> : <Mic size={20} />}
               </button>
@@ -287,12 +361,12 @@ const ChatWidget = () => {
               onChange={(e) => setInputMessage(e.target.value)}
               placeholder={isRecording ? "Listening..." : (isAuthenticated ? "Type your message..." : "Chat as guest")}
               className="chat-input"
-              disabled={isSending || isRecording}
+              disabled={isSendingRef.current || isRecording} // Check ref for disabling
             />
             <button
               type="submit"
               className="chat-send-btn"
-              disabled={isSending || (!inputMessage.trim() && !recordedText.trim())}
+              disabled={isSendingRef.current || (!inputMessage.trim() && !recordedText.trim())} // Check ref for disabling
             >
               <Send size={20} />
             </button>
