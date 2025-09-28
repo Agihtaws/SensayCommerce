@@ -138,7 +138,7 @@ router.get('/meta/filters', async (req, res) => {
   }
 });
 
-// Create product with auto Sensay sync (Admin only) - FIXED
+// Create product with auto Sensay sync (Admin only)
 router.post('/', verifyAdmin, upload.array('images', 5), async (req, res) => {
   try {
     const productData = { ...req.body };
@@ -205,7 +205,7 @@ router.post('/', verifyAdmin, upload.array('images', 5), async (req, res) => {
   }
 });
 
-// Update product with auto Sensay sync (Admin only) - FIXED
+// Update product with auto Sensay sync (Admin only)
 router.put('/:id', verifyAdmin, upload.array('images', 5), async (req, res) => {
   try {
     const product = await Product.findById(req.params.id);
@@ -284,7 +284,7 @@ router.put('/:id', verifyAdmin, upload.array('images', 5), async (req, res) => {
   }
 });
 
-// Delete product with Sensay cleanup (Admin only)
+// In your products routes, replace the delete route:
 router.delete('/:id', verifyAdmin, async (req, res) => {
   try {
     const product = await Product.findById(req.params.id);
@@ -295,24 +295,48 @@ router.delete('/:id', verifyAdmin, async (req, res) => {
         error: 'Product not found'
       });
     }
-    
-    // Remove from Sensay if synced
+
+    // STEP 1: Always delete from database first (source of truth)
+    await Product.findByIdAndDelete(req.params.id);
+    console.log(`✅ Product ${product.name} deleted from database`);
+
+    // STEP 2: Try to delete from Sensay (best effort)
     if (product.sensayKnowledgeId) {
       try {
         await sensayService.deleteKnowledge(req.user._id, product.sensayKnowledgeId);
         console.log(`✅ Product ${product.name} removed from Sensay: ${product.sensayKnowledgeId}`);
       } catch (sensayError) {
-        console.error('❌ Sensay deletion failed:', sensayError.message);
+        console.error('⚠️ Sensay deletion failed (non-blocking):', sensayError.message);
+        // Don't throw error - database deletion already succeeded
       }
     }
+
+    // STEP 3: Check if this was the last product
+    const remainingProducts = await Product.countDocuments({ isActive: true });
     
-    await Product.findByIdAndDelete(req.params.id);
-    
+    // In your product deletion route, update this part:
+if (remainingProducts === 0) {
+  // Add "no products" knowledge when catalog becomes empty
+  try {
+    await sensayService.addKnowledge(
+      req.user._id, // <- Use the actual admin user ID, not 'system'
+      "IMPORTANT: The product catalog is currently empty. There are no products available for purchase. Customers should be informed that no products are currently listed.",
+      'system_state'
+    );
+    console.log('✅ Added empty catalog knowledge to Sensay');
+  } catch (emptyStateError) {
+    console.error('⚠️ Failed to add empty state knowledge:', emptyStateError.message);
+  }
+}
+
+
     res.json({
       success: true,
-      message: 'Product deleted and removed from Sensay AI'
+      message: 'Product deleted successfully',
+      catalogEmpty: remainingProducts === 0
     });
   } catch (error) {
+    console.error('❌ Product deletion failed:', error);
     res.status(500).json({
       success: false,
       error: 'Failed to delete product',
