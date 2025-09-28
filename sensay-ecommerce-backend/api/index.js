@@ -1,7 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const helmet = require('helmet');
-const rateLimit = require('express-rate-limit');
+// const rateLimit = require('express-rate-limit'); // Removed for hackathon
 require('dotenv').config(); // Load environment variables from .env
 
 // --- ADJUSTED REQUIRE PATHS ---
@@ -32,12 +32,13 @@ app.use(cors({
   // In production on Vercel, your frontend will have a specific domain.
   // Replace 'https://your-vercel-frontend-domain.vercel.app' with that URL in Vercel's environment variables.
   origin: process.env.NODE_ENV === 'production'
-    ? [process.env.CORS_ORIGIN_FRONTEND || 'https://sensaycommerce.onrender.com']
+    ? [process.env.CORS_ORIGIN_FRONTEND || 'https://your-vercel-frontend-domain.vercel.app']
     : ['http://localhost:3000', 'http://localhost:3001'],
   credentials: true
 }));
 
-// Rate Limiting
+// Rate Limiting - DISABLED FOR HACKATHON
+/*
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
   max: 100, // limit each IP to 100 requests per windowMs
@@ -47,6 +48,8 @@ const limiter = rateLimit({
   }
 });
 app.use('/api/', limiter); // Apply to all /api routes
+*/
+console.log('⚠️ Rate limiting disabled for hackathon demo');
 
 // Body Parser
 app.use(express.json({ limit: '10mb' })); // Parse JSON bodies
@@ -71,9 +74,11 @@ app.use('/api/brands', brandRoutes);
 app.get('/api/health', (req, res) => {
   res.json({
     success: true,
-    message: 'Server is running',
+    message: 'Sensay E-commerce API is running',
     timestamp: new Date().toISOString(),
-    environment: process.env.NODE_ENV
+    environment: process.env.NODE_ENV,
+    rateLimiting: 'disabled', // Show rate limiting status
+    version: '1.0.0'
   });
 });
 
@@ -81,7 +86,9 @@ app.get('/api/health', (req, res) => {
 app.use((req, res) => {
   res.status(404).json({
     success: false,
-    error: 'Route not found'
+    error: 'Route not found',
+    path: req.path,
+    method: req.method
   });
 });
 
@@ -101,8 +108,10 @@ app.use((error, req, res, next) => {
 if (require.main === module) {
   const PORT = process.env.PORT || 5000;
   app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
-    console.log(`Environment: ${process.env.NODE_ENV}`);
+    console.log(`🚀 Sensay E-commerce Server running on port ${PORT}`);
+    console.log(`📊 Environment: ${process.env.NODE_ENV}`);
+    console.log(`⚠️  Rate limiting: DISABLED (Hackathon Mode)`);
+    console.log(`🔗 Health check: http://localhost:${PORT}/api/health`);
   });
 }
 // --- END: CONDITIONAL APP.LISTEN() FOR LOCAL TESTING ---
